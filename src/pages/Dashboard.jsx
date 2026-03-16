@@ -107,13 +107,7 @@ export default function Dashboard() {
           />
         )}
 
-        {/* KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <KPICard label="Lowest TCO" value={`$${lowestTCO.tco.toFixed(3)}`} subtitle={lowestTCO.name} icon={TrendingDown} color="#10b981" delay={0} />
-          <KPICard label="Systems Compared" value={systems.length} subtitle="Standard Electricity" icon={Printer} color="#3b82f6" delay={0.1} />
-          <KPICard label="Avg 5Y Investment" value={formatCurrency(totalInvestmentAvg)} subtitle="Per system" icon={DollarSign} color="#8b5cf6" delay={0.2} />
-          <KPICard label="Highest Throughput" value={`${highestTPT.performance.tpt} imp/hr`} subtitle={highestTPT.name} icon={BarChart3} color="#f59e0b" delay={0.3} />
-        </div>
+
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
