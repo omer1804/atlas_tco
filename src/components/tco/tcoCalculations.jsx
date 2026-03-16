@@ -13,8 +13,8 @@ export function computeSystem(s) {
   const yearlyImpressions = inputs.tpt * inputs.availability * inputs.utilization * inputs.hrsPerShift * workingDays;
   const fiveYearImpressions = yearlyImpressions * 5;
 
-  // Labor (5Y) — uses 252 working days/year
-  const labor5Y = inputs.operatorsPerSystem * inputs.laborCostPerHr * inputs.hrsPerShift * workingDays * 5;
+  // Labor (5Y) — uses 365 days/year (operators work every day)
+  const labor5Y = inputs.operatorsPerSystem * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
 
   // Ink cost (5Y)
   // Ink volume per impression (ml -> L)
