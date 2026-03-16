@@ -7,7 +7,7 @@ import SystemCard from "../components/tco/SystemCard";
 import PerformanceTable from "../components/tco/PerformanceTable";
 import InputsPanel from "../components/tco/InputsPanel";
 import { computeSystem, DEFAULT_SYSTEMS } from "../components/tco/tcoCalculations";
-import { formatCurrency } from "../components/tco/tcoData";
+import { formatCurrency, SYSTEM_COLORS } from "../components/tco/tcoData";
 
 export default function Dashboard() {
   const [systemsInputs, setSystemsInputs] = useState(
@@ -72,6 +72,32 @@ export default function Dashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* System Selector */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Select systems to compare</p>
+          <div className="flex flex-wrap gap-2">
+            {allSystems.map((s) => {
+              const active = selectedSystems.includes(s.name);
+              const color = SYSTEM_COLORS[s.name] || "#64748b";
+              return (
+                <button
+                  key={s.name}
+                  onClick={() => toggleSystem(s.name)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all"
+                  style={{
+                    backgroundColor: active ? `${color}15` : "#f8fafc",
+                    borderColor: active ? color : "#e2e8f0",
+                    color: active ? color : "#94a3b8",
+                  }}
+                >
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: active ? color : "#cbd5e1" }} />
+                  {s.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Inputs Panel */}
         {showInputs && (
           <InputsPanel
