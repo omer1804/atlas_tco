@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { formatCurrency, formatNumber, SYSTEM_COLORS } from "./tcoData";
-import { DollarSign, Cpu, Zap, Users, Droplets, Wrench } from "lucide-react";
+import { DollarSign, Cpu, Zap, Users, Droplets, Wrench, ShoppingBag } from "lucide-react";
 
 export default function SystemCard({ system, index }) {
   const color = SYSTEM_COLORS[system.name] || "#64748b";
+  const [sellingPrice, setSellingPrice] = useState("");
 
   return (
     <motion.div
