@@ -17,12 +17,11 @@ export function computeSystem(s) {
   const labor5Y = inputs.operatorsPerSystem * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
 
   // Ink cost (5Y)
-  // Ink volume per impression (ml -> L)
-  const inkPerImpL = (inputs.avgInkLaydown / 1000);
-  const fixaPerImpL = (inputs.fixaLaydown / inputs.fixaDilution / 1000);
+  // ink (ml->L) * inkCostPerL + functional consumables (same laydown) * functionalCostPerL + fixa (ml->L after dilution) * fixaCostPerL
+  const inkPerImpL = inputs.avgInkLaydown / 1000;
+  const fixaPerImpL = (inputs.fixaLaydown / inputs.fixaDilution) / 1000;
   const inkCost5Y = fiveYearImpressions * (
     inkPerImpL * inputs.inkCostPerL +
-    inkPerImpL * inputs.functionalConsumablesPerL +
     fixaPerImpL * inputs.fixaCostPerL
   );
 
