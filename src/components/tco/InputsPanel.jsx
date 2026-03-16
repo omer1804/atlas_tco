@@ -1,128 +1,193 @@
-import React, { useState } from "react";
+import React from "react";
 import { SYSTEM_COLORS } from "./tcoData";
-import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
-import { DEFAULT_SYSTEMS } from "./tcoCalculations";
+import { RotateCcw } from "lucide-react";
 
-const FIELD_GROUPS = [
+const ROW_GROUPS = [
   {
-    label: "CAPEX",
-    fields: [
-      { key: "systemPrice", label: "System Price ($)", step: 1000 },
-      { key: "installation", label: "Installation ($)", step: 1000 },
+    section: "CAPEX",
+    color: "#fef3c7",
+    rows: [
+      { key: "systemPrice", label: "System price [ASP]", prefix: "$", step: 1000 },
+      { key: "installation", label: "Installation", prefix: "$", step: 1000 },
+      { key: null, label: "Life time", display: () => "5" },
+    ],
+    totals: [
+      { label: "Total CAPEX", fn: (inp) => inp.systemPrice + inp.installation },
     ],
   },
   {
-    label: "Labor",
-    fields: [
-      { key: "operatorsPerSystem", label: "Operators", step: 1 },
-      { key: "laborCostPerHr", label: "Labor Cost ($/hr)", step: 1 },
-      { key: "hrsPerShift", label: "Hrs/Shift", step: 1 },
+    section: "OPEX",
+    color: "#fce7f3",
+    rows: [],
+    subsections: [
+      {
+        label: "Labor",
+        rows: [
+          { key: "operatorsPerSystem", label: "Operator per system", step: 1 },
+          { key: "laborCostPerHr", label: "Labor cost ($/hr)", prefix: "$", step: 1 },
+          { key: "hrsPerShift", label: "#Hr/Shift", step: 1 },
+        ],
+        total: { label: "Labor (5Y)", fn: (inp) => inp.operatorsPerSystem * inp.laborCostPerHr * inp.hrsPerShift * 365 * 5 },
+      },
+      {
+        label: "Ink",
+        rows: [
+          { key: "inkCostPerL", label: "Ink Cost ($/L)", prefix: "$", step: 1 },
+          { key: "functionalConsumablesPerL", label: "Functional consumables ($/L)", prefix: "$", step: 1 },
+          { key: "fixaCostPerL", label: "Fixa Cost ($/L)", prefix: "$", step: 1 },
+          { key: "avgInkLaydown", label: "Avg ink Laydown (ml)", step: 0.5 },
+          { key: "fixaLaydown", label: "Fixa laydown", step: 0.5 },
+          { key: "fixaDilution", label: "Fixa dilution", step: 1 },
+        ],
+        total: null,
+      },
+      {
+        label: "Maintenance",
+        rows: [
+          { key: "serviceContractPerYear", label: "Service contract/Year", prefix: "$", step: 1000 },
+        ],
+        total: { label: "Maintenance (5Y)", fn: (inp) => inp.serviceContractPerYear * 5 },
+      },
+      {
+        label: "Energy",
+        rows: [
+          { key: "kwhCost", label: "KWh cost [$]", prefix: "$", step: 0.01 },
+          { key: "systemPower", label: "System power [KWh]", step: 0.5 },
+          { key: "systemPowerIdle", label: "System power idle [KWh]", step: 0.1 },
+          { key: "dryerPower", label: "Dryer power [KWh]", step: 1 },
+        ],
+        total: { label: "Energy (5Y)", fn: (inp) => (inp.systemPower + inp.dryerPower) * inp.hrsPerShift * 365 * 5 * inp.kwhCost },
+      },
+      {
+        label: "Foot Print",
+        rows: [
+          { key: "sqrFootCost", label: "$/Sqr foot", prefix: "$", step: 1 },
+          { key: "sqrFootSystem", label: "Sqr foot - system", step: 10 },
+          { key: "sqrFootDryer", label: "Sqr foot - dryer", step: 10 },
+        ],
+        total: { label: "Foot Print (5Y)", fn: (inp) => (inp.sqrFootSystem + inp.sqrFootDryer) * inp.sqrFootCost * 5 },
+      },
     ],
   },
   {
-    label: "Ink",
-    fields: [
-      { key: "inkCostPerL", label: "Ink Cost ($/L)", step: 1 },
-      { key: "avgInkLaydown", label: "Avg Ink Laydown (ml)", step: 0.5 },
-      { key: "functionalConsumablesPerL", label: "Func. Consumables ($/L)", step: 1 },
-      { key: "fixaCostPerL", label: "Fixa Cost ($/L)", step: 1 },
-      { key: "fixaLaydown", label: "Fixa Laydown", step: 0.5 },
-      { key: "fixaDilution", label: "Fixa Dilution", step: 1 },
-    ],
-  },
-  {
-    label: "Maintenance",
-    fields: [
-      { key: "serviceContractPerYear", label: "Service Contract/Year ($)", step: 1000 },
-    ],
-  },
-  {
-    label: "Energy",
-    fields: [
-      { key: "kwhCost", label: "KWh Cost ($)", step: 0.01 },
-      { key: "systemPower", label: "System Power (KWh)", step: 0.5 },
-      { key: "dryerPower", label: "Dryer Power (KWh)", step: 1 },
-    ],
-  },
-  {
-    label: "Footprint",
-    fields: [
-      { key: "sqrFootSystem", label: "Sqr Ft - System", step: 10 },
-      { key: "sqrFootDryer", label: "Sqr Ft - Dryer", step: 10 },
-      { key: "sqrFootCost", label: "$/Sqr Ft", step: 1 },
-    ],
-  },
-  {
-    label: "Performance",
-    fields: [
-      { key: "tpt", label: "TPT (imp/hr)", step: 10 },
-      { key: "availability", label: "Availability (0-1)", step: 0.01 },
-      { key: "utilization", label: "Utilization (0-1)", step: 0.01 },
+    section: "Performance",
+    color: "#d1fae5",
+    rows: [
+      { key: "tpt", label: "TPT - impression per hour", step: 5 },
+      { key: "availability", label: "Availability", step: 0.01, isPercent: true },
+      { key: "utilization", label: "Utilization", step: 0.01, isPercent: true },
     ],
   },
 ];
 
-export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
-  const [openGroup, setOpenGroup] = useState("CAPEX");
+function fmt(val, prefix, isPercent) {
+  if (isPercent) return `${(val * 100).toFixed(0)}%`;
+  if (prefix === "$") return val.toLocaleString();
+  return val;
+}
 
+export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <h3 className="text-base font-semibold text-slate-900">Edit Inputs</h3>
-        <button
-          onClick={onReset}
-          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors"
-        >
+        <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors">
           <RotateCcw className="w-3.5 h-3.5" /> Reset to defaults
         </button>
       </div>
 
-      {FIELD_GROUPS.map((group) => (
-        <div key={group.label} className="border-b border-slate-100 last:border-0">
-          <button
-            className="w-full flex items-center justify-between px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-            onClick={() => setOpenGroup(openGroup === group.label ? null : group.label)}
-          >
-            <span>{group.label}</span>
-            {openGroup === group.label ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-          </button>
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs border-collapse">
+          <thead>
+            <tr className="border-b border-slate-100">
+              <th className="text-left py-3 px-4 text-slate-500 font-medium w-56 min-w-[14rem]">Parameter</th>
+              {systemsInputs.map((s) => (
+                <th key={s.name} className="text-center py-3 px-3 font-bold min-w-[110px]" style={{ color: SYSTEM_COLORS[s.name] || "#64748b" }}>
+                  {s.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ROW_GROUPS.map((group) => (
+              <React.Fragment key={group.section}>
+                {/* Section header */}
+                <tr>
+                  <td colSpan={systemsInputs.length + 1} className="py-2 px-4 font-bold text-slate-800 text-sm" style={{ backgroundColor: group.color }}>
+                    {group.section}
+                  </td>
+                </tr>
 
-          {openGroup === group.label && (
-            <div className="px-4 pb-4">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr>
-                    <th className="text-left py-2 pl-2 text-slate-400 font-medium w-44">Parameter</th>
+                {/* Direct rows */}
+                {group.rows && group.rows.map((row) => (
+                  <tr key={row.label} className="border-t border-slate-50 hover:bg-slate-50/50">
+                    <td className="py-1.5 px-4 text-slate-600 pl-6">{row.prefix && <span className="text-slate-400 mr-1">$</span>}{row.label.replace(/\$\s?/, "")}</td>
                     {systemsInputs.map((s) => (
-                      <th key={s.name} className="text-center py-2 px-1 font-semibold" style={{ color: SYSTEM_COLORS[s.name] || "#64748b" }}>
-                        {s.name.replace("Atlas ", "").replace("MATRIX ", "MTX ")}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {group.fields.map((field) => (
-                    <tr key={field.key} className="border-t border-slate-50">
-                      <td className="py-1.5 pl-2 text-slate-500">{field.label}</td>
-                      {systemsInputs.map((s) => (
-                        <td key={s.name} className="py-1 px-1">
+                      <td key={s.name} className="py-1 px-2 text-center">
+                        {row.key ? (
                           <input
                             type="number"
-                            step={field.step}
-                            value={s.inputs[field.key]}
-                            onChange={(e) => onUpdate(s.name, field.key, parseFloat(e.target.value))}
-                            className="w-full text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            step={row.step}
+                            value={s.inputs[row.key]}
+                            onChange={(e) => onUpdate(s.name, row.key, parseFloat(e.target.value))}
+                            className="w-full text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                           />
+                        ) : (
+                          <span className="text-slate-500">{row.display ? row.display(s.inputs) : "—"}</span>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+
+                {/* Totals for top-level section */}
+                {group.totals && group.totals.map((total) => (
+                  <tr key={total.label} className="border-t-2 border-slate-200" style={{ backgroundColor: group.color }}>
+                    <td className="py-2 px-4 font-bold text-slate-800 pl-4">{total.label}</td>
+                    {systemsInputs.map((s) => (
+                      <td key={s.name} className="py-2 px-2 text-center font-bold text-slate-800">
+                        ${total.fn(s.inputs).toLocaleString()}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+
+                {/* Subsections (OPEX) */}
+                {group.subsections && group.subsections.map((sub) => (
+                  <React.Fragment key={sub.label}>
+                    <tr className="border-t border-slate-200">
+                      <td className="py-1.5 px-4 font-semibold text-slate-700 pl-5 bg-slate-50">{sub.label}</td>
+                      {systemsInputs.map((s) => (
+                        <td key={s.name} className="py-1.5 px-2 text-center font-semibold text-slate-700 bg-slate-50">
+                          {sub.total ? `$${sub.total.fn(s.inputs).toLocaleString(undefined, { maximumFractionDigits: 0 })}` : ""}
                         </td>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      ))}
+                    {sub.rows.map((row) => (
+                      <tr key={row.label} className="border-t border-slate-50 hover:bg-slate-50/50">
+                        <td className="py-1.5 px-4 text-slate-500 pl-8">{row.label}</td>
+                        {systemsInputs.map((s) => (
+                          <td key={s.name} className="py-1 px-2 text-center">
+                            {row.key ? (
+                              <input
+                                type="number"
+                                step={row.step}
+                                value={row.isPercent ? (s.inputs[row.key] * 100).toFixed(0) : s.inputs[row.key]}
+                                onChange={(e) => onUpdate(s.name, row.key, row.isPercent ? parseFloat(e.target.value) / 100 : parseFloat(e.target.value))}
+                                className="w-full text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                              />
+                            ) : "—"}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

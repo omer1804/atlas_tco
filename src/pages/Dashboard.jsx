@@ -14,8 +14,20 @@ export default function Dashboard() {
     DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } }))
   );
   const [showInputs, setShowInputs] = useState(false);
+  const [selectedSystems, setSelectedSystems] = useState(
+    DEFAULT_SYSTEMS.map((s) => s.name)
+  );
 
-  const systems = useMemo(() => systemsInputs.map(computeSystem), [systemsInputs]);
+  const allSystems = useMemo(() => systemsInputs.map(computeSystem), [systemsInputs]);
+  const systems = useMemo(() => allSystems.filter((s) => selectedSystems.includes(s.name)), [allSystems, selectedSystems]);
+
+  function toggleSystem(name) {
+    setSelectedSystems((prev) =>
+      prev.includes(name)
+        ? prev.length > 1 ? prev.filter((n) => n !== name) : prev
+        : [...prev, name]
+    );
+  }
 
   function handleUpdate(systemName, field, value) {
     setSystemsInputs((prev) =>
