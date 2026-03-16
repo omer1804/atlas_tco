@@ -38,7 +38,8 @@ export function computeSystem(s) {
   const footPrintCost = (inputs.sqrFootSystem + inputs.sqrFootDryer) * inputs.sqrFootCost * 5;
 
   const totalOpex = labor5Y + inkCost5Y + maintenance5Y + energy5Y + footPrintCost;
-  const total5YInvestment = totalCapex + totalOpex;
+  // Subtract residual asset value after 5 years (as per Excel model)
+  const total5YInvestment = totalCapex + totalOpex - assetValueAfter5Y;
 
   const tco = fiveYearImpressions > 0 ? total5YInvestment / fiveYearImpressions : 0;
   const cpp = fiveYearImpressions > 0 ? inkCost5Y / fiveYearImpressions : 0;
