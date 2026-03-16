@@ -8,12 +8,13 @@ export function computeSystem(s) {
   const depreciation = (inputs.systemPrice * 0.16); // SLN
   const assetValueAfter5Y = inputs.systemPrice * 0.2;
 
-  // Performance
-  const yearlyImpressions = inputs.tpt * inputs.availability * inputs.utilization * inputs.hrsPerShift * 365;
+  // Performance — uses 252 working days/year (as per Excel model)
+  const workingDays = 252;
+  const yearlyImpressions = inputs.tpt * inputs.availability * inputs.utilization * inputs.hrsPerShift * workingDays;
   const fiveYearImpressions = yearlyImpressions * 5;
 
-  // Labor (5Y)
-  const labor5Y = inputs.operatorsPerSystem * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
+  // Labor (5Y) — uses 252 working days/year
+  const labor5Y = inputs.operatorsPerSystem * inputs.laborCostPerHr * inputs.hrsPerShift * workingDays * 5;
 
   // Ink cost (5Y)
   // Ink volume per impression (ml -> L)
