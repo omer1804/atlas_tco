@@ -101,7 +101,7 @@ export default function Dashboard() {
         {/* Inputs Panel */}
         {showInputs && (
           <InputsPanel
-            systemsInputs={systemsInputs}
+            systemsInputs={systemsInputs.filter((s) => selectedSystems.includes(s.name))}
             onUpdate={handleUpdate}
             onReset={handleReset}
           />
