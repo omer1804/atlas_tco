@@ -29,8 +29,8 @@ export function computeSystem(s) {
   // Maintenance (5Y)
   const maintenance5Y = inputs.serviceContractPerYear * 5;
 
-  // Energy (5Y) — KWh * cost * hours * 365 * 5
-  const energyHrsPerYear = inputs.hrsPerShift * 365;
+  // Energy (5Y) — KWh * cost * hours * workingDays * 5
+  const energyHrsPerYear = inputs.hrsPerShift * workingDays;
   const energyKwh5Y = (inputs.systemPower + inputs.dryerPower) * energyHrsPerYear * 5;
   const energy5Y = energyKwh5Y * inputs.kwhCost;
 
