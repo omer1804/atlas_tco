@@ -39,12 +39,18 @@ export default function Comparison() {
     setDtfInputs((prev) => ({ ...prev, [key]: value }));
   }
 
+  // ── Fabric type ───────────────────────────────────────────────────────────
+  const [fabric, setFabric] = useState("cotton"); // "cotton" | "polyester"
+
   // ── Screen state ──────────────────────────────────────────────────────────
   const [runLength, setRunLength] = useState(100);
   const [numColors, setNumColors] = useState(4);
   const [showScreenInputs, setShowScreenInputs] = useState(false);
 
-  const screenCPP = useMemo(() => getScreenCPP(runLength, numColors), [runLength, numColors]);
+  const screenCPP = useMemo(
+    () => getScreenCPP(runLength, numColors) + (fabric === "polyester" ? 0.2 : 0),
+    [runLength, numColors, fabric]
+  );
 
   // ── Chart data ─────────────────────────────────────────────────────────────
   const chartData = [
