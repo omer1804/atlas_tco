@@ -218,6 +218,7 @@ export default function Comparison() {
           screenCPP={screenCPP}
           screenRunLength={runLength}
           screenNumColors={numColors}
+          fabric={fabric}
         />
 
         {/* Context note for screen */}
