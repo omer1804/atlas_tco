@@ -72,7 +72,7 @@ export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLengt
     { label: "Fabric", value: fabric === "polyester" ? "Polyester" : "Cotton" },
     { label: "Run length", value: `${screenRunLength} pcs` },
     { label: "# Colors", value: `${screenNumColors} colors` },
-    { label: "Labor (est. 2 ops)", value: formatCurrency(screenRunLength * 20 * 2 / 400 * 400) },
+    { label: "Labor (5Y est.)", value: formatCurrency(2 * 20 * 10 * 365 * 5) },
     { label: "Throughput", value: "400 shirts/hr" },
     { label: "TCO range (typical)", value: "$0.37 – $182" },
   ];
