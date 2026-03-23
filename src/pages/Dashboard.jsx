@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { DollarSign, TrendingDown, Printer, BarChart3, Settings } from "lucide-react";
 import KPICard from "../components/tco/KPICard";
 import TCOBarChart from "../components/tco/TCOBarChart";
@@ -56,6 +57,7 @@ export default function Dashboard() {
           <div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Atlas TCO Analyzer</h1>
             <p className="text-sm text-slate-500 mt-0.5">5-Year Total Cost of Ownership · Standard Electricity</p>
+            <Link to="/Comparison" className="text-xs text-blue-500 hover:underline mt-1 inline-block">→ Compare vs DTF &amp; Screen</Link>
           </div>
           <button
             onClick={() => setShowInputs((v) => !v)}
