@@ -78,6 +78,29 @@ export default function Comparison() {
           onSelect={setSelectedKornit}
         />
 
+        {/* Fabric toggle */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Fabric Type</p>
+          <div className="flex gap-3">
+            {["cotton", "polyester"].map((f) => (
+              <button
+                key={f}
+                onClick={() => setFabric(f)}
+                className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all ${
+                  fabric === f
+                    ? "bg-slate-800 text-white border-slate-800"
+                    : "bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-400"
+                }`}
+              >
+                {f === "cotton" ? "🧶 Cotton" : "🧵 Polyester"}
+              </button>
+            ))}
+          </div>
+          {fabric === "polyester" && (
+            <p className="text-xs text-amber-600 mt-2">+$0.20 added to Screen Printing CPP for polyester ink/adhesive.</p>
+          )}
+        </div>
+
         {/* Kornit inputs toggle */}
         <div>
           <button
