@@ -45,7 +45,7 @@ function Card({ name, cpp, stats, color }) {
   );
 }
 
-export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLength, screenNumColors }) {
+export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLength, screenNumColors, fabric }) {
   const kornitColor = getColor(kornit.name);
 
   const kornitStats = [
