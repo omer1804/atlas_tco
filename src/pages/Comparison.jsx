@@ -65,7 +65,7 @@ export default function Comparison() {
       <div className="border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Technology Comparison</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Kornit Digital vs. DTF vs. Screen Printing · Cost Per Print</p>
+          <p className="text-sm text-slate-500 mt-0.5">Kornit Digital vs. DTF vs. Screen Printing · TCO per Impression</p>
         </div>
       </div>
 
@@ -83,21 +83,21 @@ export default function Comparison() {
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Fabric Type</p>
           <div className="flex gap-3">
             {["cotton", "polyester"].map((f) => (
-              <button
-                key={f}
-                onClick={() => setFabric(f)}
-                className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all ${
-                  fabric === f
-                    ? "bg-slate-800 text-white border-slate-800"
-                    : "bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-400"
-                }`}
-              >
-                {f === "cotton" ? "🧶 Cotton" : "🧵 Polyester"}
-              </button>
+            <button
+            key={f}
+            onClick={() => setFabric(f)}
+            className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all ${
+              fabric === f
+                ? "bg-slate-800 text-white border-slate-800"
+                : "bg-slate-50 text-slate-500 border-slate-200 hover:border-slate-400"
+            }`}
+            >
+            {f === "cotton" ? "Cotton" : "Polyester"}
+            </button>
             ))}
           </div>
           {fabric === "polyester" && (
-            <p className="text-xs text-amber-600 mt-2">+$0.20 added to Screen Printing CPP for polyester ink/adhesive.</p>
+          <p className="text-xs text-amber-600 mt-2">+$0.20 added to Screen Printing TCO for polyester ink/adhesive.</p>
           )}
         </div>
 
@@ -174,7 +174,7 @@ export default function Comparison() {
             >
               <span>Screen Printing Settings</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-normal">CPP: ${screenCPP.toFixed(2)}</span>
+                <span className="text-xs font-normal">TCO: ${screenCPP.toFixed(2)}</span>
                 {showScreenInputs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </div>
             </button>
@@ -193,10 +193,10 @@ export default function Comparison() {
                 {[
                   ["Run Length", `${runLength} pcs`],
                   ["# Colors", `${numColors} colors`],
-                  ["CPP (from table)", `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20 poly)" : ""}`],
-                  ["Low-run CPP", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
-                  ["High-run CPP", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
-                  ["Key driver", numColors > 4 ? "High color count" : runLength < 50 ? "Low run length" : "Balanced"],
+                  ["TCO (from table)", `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20 poly)" : ""}`],
+                  ["Low-run TCO", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
+                  ["High-run TCO", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
+                  ["Throughput", "400 shirts/hr"],
                 ].map(([label, value]) => (
                   <div key={label} className="bg-purple-50 rounded-lg p-2">
                     <p className="text-purple-400 text-[10px]">{label}</p>
@@ -209,7 +209,7 @@ export default function Comparison() {
         </div>
 
         {/* Comparison Chart */}
-        <ComparisonChart data={chartData} title="Cost Per Print (CPP) Comparison" />
+        <ComparisonChart data={chartData} title="TCO Comparison" />
 
         {/* Comparison Cards */}
         <ComparisonCards
@@ -223,10 +223,10 @@ export default function Comparison() {
 
         {/* Context note for screen */}
         <div className="bg-purple-50 border border-purple-100 rounded-2xl p-5 text-sm text-purple-700">
-          <p className="font-semibold mb-1">⚠️ Screen Printing Variability</p>
+          <p className="font-semibold mb-1">Screen Printing Variability</p>
           <p className="text-xs leading-relaxed">
-            Screen printing CPP ranges from <b>$0.37</b> (500 pieces, 1 color) to <b>$182+</b> (10 pieces, 14 colors).
-            The table shows actual CPP based on amortized setup costs. For long runs with few colors it can be competitive;
+            Screen printing TCO ranges from <b>$0.37</b> (500 pieces, 1 color) to <b>$182+</b> (10 pieces, 14 colors).
+            The table shows actual TCO based on amortized setup costs. For long runs with few colors it can be competitive;
             for short runs or complex designs, digital printing (Kornit/DTF) is significantly more cost-effective.
           </p>
         </div>
