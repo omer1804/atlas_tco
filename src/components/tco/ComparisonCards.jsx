@@ -68,7 +68,8 @@ export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLengt
   ];
 
   const screenStats = [
-    { label: "CPP (table lookup)", value: `$${screenCPP.toFixed(2)}` },
+    { label: "CPP (table lookup)", value: `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20)" : ""}` },
+    { label: "Fabric", value: fabric === "polyester" ? "Polyester" : "Cotton" },
     { label: "Run length", value: `${screenRunLength} pcs` },
     { label: "# Colors", value: `${screenNumColors} colors` },
     { label: "CPP range (typical)", value: "$0.37 – $182" },
