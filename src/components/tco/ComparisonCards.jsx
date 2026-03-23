@@ -32,7 +32,7 @@ function Card({ name, cpp, stats, color }) {
             className="text-sm font-bold px-3 py-1 rounded-full"
             style={{ backgroundColor: `${color}15`, color }}
           >
-            ${typeof cpp === "number" ? cpp.toFixed(2) : cpp} CPP
+            ${typeof cpp === "number" ? cpp.toFixed(2) : cpp} TCO
           </span>
         </div>
         <div className="space-y-0">
@@ -51,7 +51,7 @@ export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLengt
   const kornitStats = [
     { label: "5Y Total Investment", value: formatCurrency(kornit.total5YInvestment) },
     { label: "5Y Impressions", value: new Intl.NumberFormat().format(Math.round(kornit.performance.fiveYear)) },
-    { label: "Ink / Consumables CPP", value: `$${kornit.opex.cpp.toFixed(3)}` },
+    { label: "Ink / Consumables TCO", value: `$${kornit.opex.cpp.toFixed(3)}` },
     { label: "Labor (5Y)", value: formatCurrency(kornit.opex.labor) },
     { label: "Throughput", value: `${kornit.performance.tpt} imp/hr` },
     { label: "System CAPEX", value: formatCurrency(kornit.capex.totalCapex) },
@@ -60,7 +60,7 @@ export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLengt
   const dtfStats = [
     { label: "5Y Total Investment", value: formatCurrency(dtf.total5YInvestment) },
     { label: "5Y Impressions", value: new Intl.NumberFormat().format(Math.round(dtf.fiveYearImpressions)) },
-    { label: "Consumables CPP", value: `$${dtf.cpp.toFixed(3)}` },
+    { label: "Consumables TCO", value: `$${dtf.cpp.toFixed(3)}` },
     { label: "Labor (5Y)", value: formatCurrency(dtf.labor5Y) },
     { label: "Throughput", value: `${dtf.effectiveTPH.toFixed(0)} imp/hr` },
     { label: "Total CAPEX", value: formatCurrency(dtf.totalCapex) },
@@ -68,12 +68,13 @@ export default function ComparisonCards({ kornit, dtf, screenCPP, screenRunLengt
   ];
 
   const screenStats = [
-    { label: "CPP (table lookup)", value: `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20)" : ""}` },
+    { label: "TCO (table lookup)", value: `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20)" : ""}` },
     { label: "Fabric", value: fabric === "polyester" ? "Polyester" : "Cotton" },
     { label: "Run length", value: `${screenRunLength} pcs` },
     { label: "# Colors", value: `${screenNumColors} colors` },
-    { label: "CPP range (typical)", value: "$0.37 – $182" },
-    { label: "Note", value: "Highly variable by job" },
+    { label: "Labor (est. 2 ops)", value: formatCurrency(screenRunLength * 20 * 2 / 400 * 400) },
+    { label: "Throughput", value: "400 shirts/hr" },
+    { label: "TCO range (typical)", value: "$0.37 – $182" },
   ];
 
   return (
