@@ -193,7 +193,7 @@ export default function Comparison() {
                 {[
                   ["Run Length", `${runLength} pcs`],
                   ["# Colors", `${numColors} colors`],
-                  ["CPP (from table)", `$${screenCPP.toFixed(2)}`],
+                  ["CPP (from table)", `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20 poly)" : ""}`],
                   ["Low-run CPP", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
                   ["High-run CPP", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
                   ["Key driver", numColors > 4 ? "High color count" : runLength < 50 ? "Low run length" : "Balanced"],
