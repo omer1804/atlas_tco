@@ -2,8 +2,9 @@ import React from "react";
 import { RotateCcw, AlertCircle } from "lucide-react";
 import { SCREEN_RUN_LENGTHS, SCREEN_MAX_COLORS, SCREEN_CPP_TABLE, getScreenCPP } from "./competitorCalculations";
 
-export default function ScreenInputsPanel({ runLength, numColors, onRunLengthChange, onNumColorsChange }) {
-  const cpp = getScreenCPP(runLength, numColors);
+export default function ScreenInputsPanel({ runLength, numColors, onRunLengthChange, onNumColorsChange, fabric }) {
+  const baseCpp = getScreenCPP(runLength, numColors);
+  const cpp = baseCpp + (fabric === "polyester" ? 0.2 : 0);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -82,7 +83,7 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
           <p className="text-xs font-medium text-slate-500 mb-2">TCO by # Screens (at {runLength} pcs)</p>
           <div className="flex flex-wrap gap-1">
             {Array.from({ length: SCREEN_MAX_COLORS }, (_, i) => {
-              const c = getScreenCPP(runLength, i + 1);
+              const c = getScreenCPP(runLength, i + 1) + (fabric === "polyester" ? 0.2 : 0);
               const selected = i + 1 === numColors;
               return (
                 <button

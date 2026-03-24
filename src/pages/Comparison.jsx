@@ -51,7 +51,7 @@ export default function Comparison() {
 
   // ── Screen state ──────────────────────────────────────────────────────────
   const [runLength, setRunLength] = useState(100);
-  const [numColors, setNumColors] = useState(4);
+  const [numColors, setNumColors] = useState(7);
   const [showScreenInputs, setShowScreenInputs] = useState(false);
 
   const screenCPP = useMemo(
@@ -219,6 +219,7 @@ export default function Comparison() {
                 numColors={numColors}
                 onRunLengthChange={setRunLength}
                 onNumColorsChange={setNumColors}
+                fabric={fabric}
               />
             )}
           </div>
