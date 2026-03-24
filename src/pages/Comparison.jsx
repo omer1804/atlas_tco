@@ -161,25 +161,6 @@ export default function Comparison() {
                 onReset={() => setSystemsInputs(DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } })))}
               />
             )}
-            {/* Kornit summary */}
-            <div className="bg-white rounded-2xl border border-blue-100 p-4 shadow-sm">
-              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-3">Kornit Summary</p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {[
-                  ["Total CAPEX", formatCurrency(kornitSystem.capex.totalCapex)],
-                  ["Throughput", `${kornitSystem.performance.tpt} imp/hr`],
-                  ["Operators", kornitSystem.opex.operatorsPerSystem],
-                  ["Ink/Consumables", `$${kornitSystem.opex.cpp.toFixed(3)}`],
-                  ["Labor 5Y", formatCurrency(kornitSystem.opex.labor)],
-                  ["TCO/impression", `$${kornitSystem.tco.toFixed(3)}`],
-                ].map(([label, value]) => (
-                  <div key={label} className="bg-blue-50 rounded-lg p-2">
-                    <p className="text-blue-400 text-[10px]">{label}</p>
-                    <p className="text-blue-800 font-bold">{value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* DTF */}
