@@ -13,7 +13,7 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
       <div className="p-4 space-y-4">
         <div className="rounded-xl p-3 bg-amber-50 border border-amber-100 flex gap-2 text-xs text-amber-700">
           <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-          <span>Screen printing CPP varies significantly with <b>run length</b> and <b>number of colors</b>. Adjust below to see the impact.</span>
+          <span>Screen printing TCO varies significantly with <b>run length</b> and <b>number of screens</b>. Adjust below to see the impact.</span>
         </div>
 
         <div>
@@ -45,7 +45,7 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-600 block mb-1">Number of Colors (screens)</label>
+          <label className="text-xs font-medium text-slate-600 block mb-1">Number of Screens</label>
           <input
             type="range"
             min={1} max={SCREEN_MAX_COLORS} step={1}
@@ -55,7 +55,7 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
           />
           <div className="flex justify-between text-xs text-slate-400 mt-1">
             <span>1</span>
-            <span className="font-bold text-purple-600 text-sm">{numColors} color{numColors > 1 ? "s" : ""}</span>
+            <span className="font-bold text-purple-600 text-sm">{numColors} screen{numColors > 1 ? "s" : ""}</span>
             <span>{SCREEN_MAX_COLORS}</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-2">
@@ -74,12 +74,12 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
         <div className="rounded-xl p-3 bg-purple-50 border border-purple-100 text-center">
           <p className="text-xs text-purple-500 mb-0.5">CPP from table</p>
           <p className="text-2xl font-bold text-purple-700">${cpp.toFixed(2)}</p>
-          <p className="text-xs text-purple-400">{runLength} pcs · {numColors} color{numColors > 1 ? "s" : ""}</p>
+          <p className="text-xs text-purple-400">{runLength} pcs · {numColors} screen{numColors > 1 ? "s" : ""}</p>
         </div>
 
         {/* Mini heatmap — show row for selected run length */}
         <div>
-          <p className="text-xs font-medium text-slate-500 mb-2">CPP by # Colors (at {runLength} pcs)</p>
+          <p className="text-xs font-medium text-slate-500 mb-2">TCO by # Screens (at {runLength} pcs)</p>
           <div className="flex flex-wrap gap-1">
             {Array.from({ length: SCREEN_MAX_COLORS }, (_, i) => {
               const c = getScreenCPP(runLength, i + 1);
@@ -96,7 +96,7 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
                     minWidth: "2.5rem",
                   }}
                 >
-                  <div className="text-[9px] opacity-70">{i + 1}c</div>
+                  <div className="text-[9px] opacity-70">{i + 1}sc</div>
                   <div className="font-semibold">${c.toFixed(2)}</div>
                 </button>
               );
