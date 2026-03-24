@@ -18,7 +18,14 @@ export default function Comparison() {
   const [selectedKornit, setSelectedKornit] = useState(DEFAULT_SYSTEMS[0].name);
   const [showKornitInputs, setShowKornitInputs] = useState(false);
 
-  const allKornitSystems = useMemo(() => systemsInputs.map(computeSystem), [systemsInputs]);
+  // Apply fabric-dependent overrides to Kornit inputs before computing
+  const allKornitSystems = useMemo(() => systemsInputs.map((s) => {
+    const fabricOverrides = fabric === "polyester"
+      ? { avgInkLaydown: 6.8, tpt: 80 }
+      : { avgInkLaydown: 4.7, tpt: 103 };
+    return computeSystem({ ...s, inputs: { ...s.inputs, ...fabricOverrides } });
+  }), [systemsInputs, fabric]);
+
   const kornitSystem = useMemo(
     () => allKornitSystems.find((s) => s.name === selectedKornit) || allKornitSystems[0],
     [allKornitSystems, selectedKornit]
