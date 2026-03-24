@@ -77,9 +77,10 @@ export default function Comparison() {
     const dKnown = dCapexPerImp + dLaborPerImp + dConsumablesPerImp;
     const dOthers = Math.max(0, d.tco - dKnown);
 
-    // Screen: total is screenCPP, breakdown already sums to it
+    // Screen: absorb any gap into setup so total matches screenCPP
     const sKnown = screenBreakdown.labor + screenBreakdown.consumables + screenBreakdown.setup;
-    const sOthers = Math.max(0, screenCPP - sKnown);
+    const sSetupAdjusted = screenBreakdown.setup + Math.max(0, screenCPP - sKnown);
+    const sOthers = 0;
 
     return [
       {
@@ -102,7 +103,7 @@ export default function Comparison() {
         name: `Screen (${runLength}pcs, ${numColors}sc)`,
         labor: screenBreakdown.labor,
         consumables: screenBreakdown.consumables,
-        setup: screenBreakdown.setup,
+        setup: sSetupAdjusted,
         capex: 0,
         others: sOthers,
       },
