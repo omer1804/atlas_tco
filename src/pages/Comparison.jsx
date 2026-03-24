@@ -204,25 +204,6 @@ export default function Comparison() {
                 onNumColorsChange={setNumColors}
               />
             )}
-            {/* Screen summary */}
-            <div className="bg-white rounded-2xl border border-purple-100 p-4 shadow-sm">
-              <p className="text-xs font-semibold text-purple-500 uppercase tracking-wider mb-3">Screen Summary</p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {[
-                  ["Run Length", `${runLength} pcs`],
-                  ["# Screens", `${numColors} screens`],
-                  ["TCO (from table)", `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20 poly)" : ""}`],
-                  ["Low-run TCO", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
-                  ["High-run TCO", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
-                  ["Throughput", "400 shirts/hr"],
-                ].map(([label, value]) => (
-                  <div key={label} className="bg-purple-50 rounded-lg p-2">
-                    <p className="text-purple-400 text-[10px]">{label}</p>
-                    <p className="text-purple-800 font-bold">{value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>{/* end 3-col grid */}
 
