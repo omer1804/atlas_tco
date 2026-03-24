@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Settings, ChevronDown, ChevronUp } from "lucide-react";
 import { computeSystem, DEFAULT_SYSTEMS } from "../components/tco/tcoCalculations";
-import { computeDTF, DEFAULT_DTF_INPUTS, computeScreen, getScreenCPP } from "../components/tco/competitorCalculations";
+import { computeDTF, DEFAULT_DTF_INPUTS, computeScreen, getScreenCPP, getScreenBreakdown } from "../components/tco/competitorCalculations";
 import { formatCurrency, SYSTEM_COLORS } from "../components/tco/tcoData";
 import InputsPanel from "../components/tco/InputsPanel";
 import KornitSelector from "../components/tco/KornitSelector";
@@ -52,12 +52,51 @@ export default function Comparison() {
     [runLength, numColors, fabric]
   );
 
-  // ── Chart data ─────────────────────────────────────────────────────────────
-  const chartData = [
-    { name: kornitSystem.name, cpp: kornitSystem.tco },
-    { name: "DTF", cpp: dtfResult.tco },
-    { name: `Screen (${runLength}pcs, ${numColors}c)`, cpp: screenCPP },
-  ];
+  // ── Chart data (stacked: labor / consumables / setup / capex) ──────────────
+  const screenBreakdown = useMemo(
+    () => getScreenBreakdown(runLength, numColors, fabric === "polyester" ? 0.2 : 0),
+    [runLength, numColors, fabric]
+  );
+
+  const chartData = useMemo(() => {
+    // Kornit: derive per-impression components from 5Y totals
+    const k = kornitSystem;
+    const kImpr = k.performance.fiveYear;
+    const kCapexPerImp = (k.capex.totalCapex - k.capex.assetValueAfter5Y) / kImpr;
+    const kLaborPerImp = k.opex.labor / kImpr;
+    const kConsumablesPerImp = k.opex.ink / kImpr;
+
+    // DTF: derive per-impression components
+    const d = dtfResult;
+    const dImpr = d.fiveYearImpressions;
+    const dCapexPerImp = (d.totalCapex - d.assetValueAfter5Y) / dImpr;
+    const dLaborPerImp = d.labor5Y / dImpr;
+    const dConsumablesPerImp = d.consumables5Y / dImpr;
+
+    return [
+      {
+        name: kornitSystem.name,
+        labor: kLaborPerImp,
+        consumables: kConsumablesPerImp,
+        setup: 0,
+        capex: kCapexPerImp,
+      },
+      {
+        name: "DTF",
+        labor: dLaborPerImp,
+        consumables: dConsumablesPerImp,
+        setup: 0,
+        capex: dCapexPerImp,
+      },
+      {
+        name: `Screen (${runLength}pcs, ${numColors}sc)`,
+        labor: screenBreakdown.labor,
+        consumables: screenBreakdown.consumables,
+        setup: screenBreakdown.setup,
+        capex: 0,
+      },
+    ];
+  }, [kornitSystem, dtfResult, screenBreakdown, runLength, numColors]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
