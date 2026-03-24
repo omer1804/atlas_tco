@@ -90,7 +90,7 @@ export const DEFAULT_SYSTEMS = [
       systemPrice: 600000, installation: 10000,
       operatorsPerSystem: 1.5, laborCostPerHr: 18, hrsPerShift: 12,
       inkCostPerL: 103, functionalConsumablesPerL: 103, fixaCostPerL: 13,
-      avgInkLaydown: 4.7, fixaLaydown: 70, fixaDilution: 10,
+      avgInkLaydown: 4.7, fixaLaydown: 70, fixaDilution: 15,
       serviceContractPerYear: 30000,
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
       sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
