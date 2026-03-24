@@ -181,6 +181,36 @@ export const SCREEN_CPP_TABLE = {
 export const SCREEN_RUN_LENGTHS = [10, 20, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500];
 export const SCREEN_MAX_COLORS = 14;
 
+// Returns a TCO breakdown for screen printing: { labor, consumables, setup, capex, total }
+// Uses the same constants baked into the lookup table:
+//   - 2 operators, $20/hr, 400 shirts/hr → laborPerPrint = 2*20/400 = $0.10
+//   - Ink/adhesive = $0.10/print
+//   - Screen prep = $15/screen + 7min setup time @ $20/hr × 2 ops
+//   - CAPEX = $0 (carousel assumed owned)
+export function getScreenBreakdown(runLength, numColors, polyesterAddon = 0) {
+  const tph = 400;
+  const laborCostPerHr = 20;
+  const laborPerCarousel = 2;
+  const prepCostPerScreen = 15;
+  const screenSetupTimeMins = 7;
+
+  const laborPerPrint = (laborPerCarousel * laborCostPerHr) / tph; // $0.10
+  const consumablesPerPrint = 0.10 + polyesterAddon;
+  const setupCostPerJob = numColors * (
+    prepCostPerScreen + (screenSetupTimeMins / 60) * laborCostPerHr * laborPerCarousel
+  );
+  const setupPerPrint = setupCostPerJob / runLength;
+  const capexPerPrint = 0; // carousel assumed owned
+
+  return {
+    labor: laborPerPrint,
+    consumables: consumablesPerPrint,
+    setup: setupPerPrint,
+    capex: capexPerPrint,
+    total: laborPerPrint + consumablesPerPrint + setupPerPrint,
+  };
+}
+
 // Get CPP from table, interpolating between nearest run lengths
 export function getScreenCPP(runLength, numColors) {
   const colorIdx = Math.min(Math.max(Math.round(numColors) - 1, 0), SCREEN_MAX_COLORS - 1);
