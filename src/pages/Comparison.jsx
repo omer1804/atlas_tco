@@ -231,7 +231,7 @@ export default function Comparison() {
               <div className="grid grid-cols-2 gap-2 text-xs">
                 {[
                   ["Run Length", `${runLength} pcs`],
-                  ["# Colors", `${numColors} colors`],
+                  ["# Screens", `${numColors} screens`],
                   ["TCO (from table)", `$${screenCPP.toFixed(2)}${fabric === "polyester" ? " (+$0.20 poly)" : ""}`],
                   ["Low-run TCO", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
                   ["High-run TCO", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
@@ -264,7 +264,7 @@ export default function Comparison() {
         <div className="bg-purple-50 border border-purple-100 rounded-2xl p-5 text-sm text-purple-700">
           <p className="font-semibold mb-1">Screen Printing Variability</p>
           <p className="text-xs leading-relaxed">
-            Screen printing TCO ranges from <b>$0.37</b> (500 pieces, 1 color) to <b>$182+</b> (10 pieces, 14 colors).
+            Screen printing TCO ranges from <b>$0.37</b> (500 pieces, 1 screen) to <b>$182+</b> (10 pieces, 14 screens).
             The table shows actual TCO based on amortized setup costs. For long runs with few colors it can be competitive;
             for short runs or complex designs, digital printing (Kornit/DTF) is significantly more cost-effective.
           </p>
