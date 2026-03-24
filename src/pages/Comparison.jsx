@@ -262,7 +262,7 @@ export default function Comparison() {
               </div>
             </div>
           </div>
-        </div>
+        </div>{/* end 3-col grid */}
 
         {/* Comparison Chart */}
         <ComparisonChart data={chartData} title="TCO Comparison" />
