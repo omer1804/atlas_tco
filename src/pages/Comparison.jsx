@@ -65,6 +65,8 @@ export default function Comparison() {
     const kCapexPerImp = (k.capex.totalCapex - k.capex.assetValueAfter5Y) / kImpr;
     const kLaborPerImp = k.opex.labor / kImpr;
     const kConsumablesPerImp = k.opex.ink / kImpr;
+    const kKnown = kCapexPerImp + kLaborPerImp + kConsumablesPerImp;
+    const kOthers = Math.max(0, k.tco - kKnown);
 
     // DTF: derive per-impression components
     const d = dtfResult;
@@ -72,6 +74,12 @@ export default function Comparison() {
     const dCapexPerImp = (d.totalCapex - d.assetValueAfter5Y) / dImpr;
     const dLaborPerImp = d.labor5Y / dImpr;
     const dConsumablesPerImp = d.consumables5Y / dImpr;
+    const dKnown = dCapexPerImp + dLaborPerImp + dConsumablesPerImp;
+    const dOthers = Math.max(0, d.tco - dKnown);
+
+    // Screen: total is screenCPP, breakdown already sums to it
+    const sKnown = screenBreakdown.labor + screenBreakdown.consumables + screenBreakdown.setup;
+    const sOthers = Math.max(0, screenCPP - sKnown);
 
     return [
       {
@@ -80,6 +88,7 @@ export default function Comparison() {
         consumables: kConsumablesPerImp,
         setup: 0,
         capex: kCapexPerImp,
+        others: kOthers,
       },
       {
         name: "DTF",
@@ -87,6 +96,7 @@ export default function Comparison() {
         consumables: dConsumablesPerImp,
         setup: 0,
         capex: dCapexPerImp,
+        others: dOthers,
       },
       {
         name: `Screen (${runLength}pcs, ${numColors}sc)`,
@@ -94,9 +104,10 @@ export default function Comparison() {
         consumables: screenBreakdown.consumables,
         setup: screenBreakdown.setup,
         capex: 0,
+        others: sOthers,
       },
     ];
-  }, [kornitSystem, dtfResult, screenBreakdown, runLength, numColors]);
+  }, [kornitSystem, dtfResult, screenBreakdown, runLength, numColors, screenCPP]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">

@@ -10,6 +10,7 @@ const SEG_COLORS = {
   consumables: "#10b981", // green
   setup: "#a855f7",       // purple — screen setup / amortized screens
   capex: "#f59e0b",       // amber
+  others: "#94a3b8",      // slate — maintenance, energy, footprint, etc.
 };
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -20,6 +21,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     consumables: "Ink / Consumables",
     setup: "Screen Setup (amortized)",
     capex: "CAPEX (amortized)",
+    others: "Others",
   };
   return (
     <div className="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm min-w-[210px]">
@@ -78,6 +80,7 @@ export default function ComparisonChart({ data, title }) {
                 consumables: "Ink / Consumables",
                 setup: "Screen Setup",
                 capex: "CAPEX",
+                others: "Others",
               };
               return <span className="text-xs text-slate-600">{map[value] || value}</span>;
             }}
@@ -87,6 +90,7 @@ export default function ComparisonChart({ data, title }) {
           {hasSetup && (
             <Bar dataKey="setup" name="setup" stackId="tco" fill={SEG_COLORS.setup} barSize={52} />
           )}
+          <Bar dataKey="others" name="others" stackId="tco" fill={SEG_COLORS.others} barSize={52} />
           <Bar dataKey="labor" name="labor" stackId="tco" fill={SEG_COLORS.labor} radius={[8, 8, 0, 0]} barSize={52} />
         </BarChart>
       </ResponsiveContainer>
