@@ -49,9 +49,6 @@ export default function Comparison() {
     setDtfInputs((prev) => ({ ...prev, [key]: value }));
   }
 
-  // ── Fabric type ───────────────────────────────────────────────────────────
-  const [fabric, setFabric] = useState("cotton"); // "cotton" | "polyester"
-
   // ── Screen state ──────────────────────────────────────────────────────────
   const [runLength, setRunLength] = useState(100);
   const [numColors, setNumColors] = useState(4);
