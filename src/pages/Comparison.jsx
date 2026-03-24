@@ -11,7 +11,7 @@ import ComparisonChart from "../components/tco/ComparisonChart";
 import ComparisonCards from "../components/tco/ComparisonCards";
 
 export default function Comparison() {
-  // ── Fabric type ───────────────────────────────────────────────────────────
+  // ── Fabric type (must be first — used by Kornit useMemo below) ────────────
   const [fabric, setFabric] = useState("cotton"); // "cotton" | "polyester"
 
   // ── Kornit state ──────────────────────────────────────────────────────────
