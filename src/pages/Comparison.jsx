@@ -278,9 +278,9 @@ export default function Comparison() {
                 {[
                   ["Run Length", `${runLength} pcs`],
                   ["# Screens", `${numColors}`],
-                  ["Low-run TCO", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
-                  ["High-run TCO", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
-                  ["TCO/imp", `$${screenCPP.toFixed(3)}${fabric === "polyester" ? "*" : ""}`],
+                  ["Low-run TCO", `$${(getScreenCPP(10, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (10pcs)`],
+                  ["High-run TCO", `$${(getScreenCPP(500, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (500pcs)`],
+                  ["TCO/imp", `$${screenCPP.toFixed(3)}`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center border-b border-purple-50 pb-1 last:border-0 last:pb-0">
                     <span className="text-slate-500">{label}</span>
