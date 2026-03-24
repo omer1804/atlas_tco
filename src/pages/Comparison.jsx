@@ -264,18 +264,73 @@ export default function Comparison() {
           </div>
         </div>{/* end 3-col grid */}
 
-        {/* Comparison Chart */}
-        <ComparisonChart data={chartData} title="TCO Comparison" />
+        {/* Chart + Summary side by side */}
+        <div className="flex gap-6 items-stretch">
+          {/* Chart — left, takes majority of width */}
+          <div className="flex-1 min-w-0">
+            <ComparisonChart data={chartData} title="TCO Comparison" />
+          </div>
 
-        {/* Comparison Cards */}
-        <ComparisonCards
-          kornit={kornitSystem}
-          dtf={dtfResult}
-          screenCPP={screenCPP}
-          screenRunLength={runLength}
-          screenNumColors={numColors}
-          fabric={fabric}
-        />
+          {/* Summary cards — right, stacked vertically, same height as chart */}
+          <div className="flex flex-col gap-3 w-64 shrink-0">
+            {/* Kornit */}
+            <div className="flex-1 bg-white rounded-2xl border border-blue-100 p-4 shadow-sm flex flex-col">
+              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-2">{kornitSystem.name}</p>
+              <div className="flex flex-col gap-1.5 flex-1 justify-around text-xs">
+                {[
+                  ["CAPEX", formatCurrency(kornitSystem.capex.totalCapex)],
+                  ["Throughput", `${kornitSystem.performance.tpt} imp/hr`],
+                  ["Ink/imp", `$${kornitSystem.opex.cpp.toFixed(3)}`],
+                  ["Labor 5Y", formatCurrency(kornitSystem.opex.labor)],
+                  ["TCO/imp", `$${kornitSystem.tco.toFixed(3)}`],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between items-center border-b border-blue-50 pb-1 last:border-0 last:pb-0">
+                    <span className="text-slate-500">{label}</span>
+                    <span className="font-bold text-blue-800">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* DTF */}
+            <div className="flex-1 bg-white rounded-2xl border border-orange-100 p-4 shadow-sm flex flex-col">
+              <p className="text-xs font-semibold text-orange-500 uppercase tracking-wider mb-2">DTF</p>
+              <div className="flex flex-col gap-1.5 flex-1 justify-around text-xs">
+                {[
+                  ["CAPEX", formatCurrency(dtfResult.totalCapex)],
+                  ["Throughput", `${dtfResult.effectiveTPH.toFixed(0)} imp/hr`],
+                  ["Consumables/imp", `$${dtfResult.cpp.toFixed(3)}`],
+                  ["Labor 5Y", formatCurrency(dtfResult.labor5Y)],
+                  ["TCO/imp", `$${dtfResult.tco.toFixed(3)}`],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between items-center border-b border-orange-50 pb-1 last:border-0 last:pb-0">
+                    <span className="text-slate-500">{label}</span>
+                    <span className="font-bold text-orange-800">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Screen */}
+            <div className="flex-1 bg-white rounded-2xl border border-purple-100 p-4 shadow-sm flex flex-col">
+              <p className="text-xs font-semibold text-purple-500 uppercase tracking-wider mb-2">Screen Printing</p>
+              <div className="flex flex-col gap-1.5 flex-1 justify-around text-xs">
+                {[
+                  ["Run Length", `${runLength} pcs`],
+                  ["# Screens", `${numColors}`],
+                  ["Low-run TCO", `$${getScreenCPP(10, numColors).toFixed(2)} (10pcs)`],
+                  ["High-run TCO", `$${getScreenCPP(500, numColors).toFixed(2)} (500pcs)`],
+                  ["TCO/imp", `$${screenCPP.toFixed(3)}${fabric === "polyester" ? "*" : ""}`],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between items-center border-b border-purple-50 pb-1 last:border-0 last:pb-0">
+                    <span className="text-slate-500">{label}</span>
+                    <span className="font-bold text-purple-800">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Context note for screen */}
         <div className="bg-purple-50 border border-purple-100 rounded-2xl p-5 text-sm text-purple-700">
