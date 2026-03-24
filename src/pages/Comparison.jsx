@@ -11,6 +11,9 @@ import ComparisonChart from "../components/tco/ComparisonChart";
 import ComparisonCards from "../components/tco/ComparisonCards";
 
 export default function Comparison() {
+  // ── Fabric type ───────────────────────────────────────────────────────────
+  const [fabric, setFabric] = useState("cotton"); // "cotton" | "polyester"
+
   // ── Kornit state ──────────────────────────────────────────────────────────
   const [systemsInputs, setSystemsInputs] = useState(
     DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } }))
