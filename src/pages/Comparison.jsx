@@ -77,9 +77,9 @@ export default function Comparison() {
     const dKnown = dCapexPerImp + dLaborPerImp + dConsumablesPerImp;
     const dOthers = Math.max(0, d.tco - dKnown);
 
-    // Screen: total is screenCPP, breakdown already sums to it
+    // Screen: total is screenCPP, absorb any gap into labor
     const sKnown = screenBreakdown.labor + screenBreakdown.consumables + screenBreakdown.setup;
-    const sOthers = Math.max(0, screenCPP - sKnown);
+    const sOthers = 0;
 
     return [
       {
@@ -100,11 +100,11 @@ export default function Comparison() {
       },
       {
         name: `Screen (${runLength}pcs, ${numColors}sc)`,
-        labor: screenBreakdown.labor,
+        labor: screenBreakdown.labor + Math.max(0, screenCPP - sKnown),
         consumables: screenBreakdown.consumables,
         setup: screenBreakdown.setup,
         capex: 0,
-        others: sOthers,
+        others: 0,
       },
     ];
   }, [kornitSystem, dtfResult, screenBreakdown, runLength, numColors, screenCPP]);
