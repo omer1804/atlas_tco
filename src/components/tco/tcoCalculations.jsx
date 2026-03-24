@@ -85,55 +85,16 @@ export function computeSystem(s) {
 
 export const DEFAULT_SYSTEMS = [
   {
-    name: "Atlas MAX Plus",
-    inputs: {
-      systemPrice: 550000, installation: 10000,
-      operatorsPerSystem: 1, laborCostPerHr: 18, hrsPerShift: 10,
-      inkCostPerL: 100, functionalConsumablesPerL: 100, fixaCostPerL: 13,
-      avgInkLaydown: 4.7, fixaLaydown: 35, fixaDilution: 10,
-      serviceContractPerYear: 27500,
-      kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
-      sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
-      tpt: 105, availability: 0.93, utilization: 0.8,
-    },
-  },
-  {
-    name: "Atlas MAX POLY",
-    inputs: {
-      systemPrice: 550000, installation: 10000,
-      operatorsPerSystem: 1, laborCostPerHr: 18, hrsPerShift: 10,
-      inkCostPerL: 125, functionalConsumablesPerL: 125, fixaCostPerL: 13,
-      avgInkLaydown: 8, fixaLaydown: 70, fixaDilution: 4,
-      serviceContractPerYear: 27500,
-      kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
-      sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
-      tpt: 73, availability: 0.93, utilization: 0.8,
-    },
-  },
-  {
-    name: "Apollo",
-    inputs: {
-      systemPrice: 1800000, installation: 10000,
-      operatorsPerSystem: 1, laborCostPerHr: 20, hrsPerShift: 14,
-      inkCostPerL: 117, functionalConsumablesPerL: 0, fixaCostPerL: 10,
-      avgInkLaydown: 5, fixaLaydown: 35, fixaDilution: 10,
-      serviceContractPerYear: 90000,
-      kwhCost: 0.1, systemPower: 8, systemPowerIdle: 1, dryerPower: 100,
-      sqrFootSystem: 1200, sqrFootDryer: 0, sqrFootCost: 25,
-      tpt: 350, availability: 0.93, utilization: 0.7,
-    },
-  },
-  {
     name: "Atlas MATRIX",
     inputs: {
       systemPrice: 600000, installation: 10000,
-      operatorsPerSystem: 1, laborCostPerHr: 18, hrsPerShift: 10,
-      inkCostPerL: 100, functionalConsumablesPerL: 100, fixaCostPerL: 13,
-      avgInkLaydown: 4.7, fixaLaydown: 35, fixaDilution: 10,
+      operatorsPerSystem: 1.5, laborCostPerHr: 18, hrsPerShift: 12,
+      inkCostPerL: 103, functionalConsumablesPerL: 103, fixaCostPerL: 13,
+      avgInkLaydown: 4.7, fixaLaydown: 70, fixaDilution: 10,
       serviceContractPerYear: 30000,
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
       sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
-      tpt: 105, availability: 0.93, utilization: 0.8,
+      tpt: 103, availability: 0.93, utilization: 0.8,
     },
   },
 ];
