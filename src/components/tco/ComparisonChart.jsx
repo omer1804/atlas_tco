@@ -17,9 +17,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
   const labels = {
-    labor: "Labor",
+    labor: "Labor (incl. screen setup)",
     consumables: "Ink / Consumables",
-    setup: "Screen Setup (amortized)",
     capex: "CAPEX (amortized)",
     others: "Others",
   };
@@ -44,9 +43,6 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function ComparisonChart({ data, title }) {
-  // Determine which segments exist in data
-  const hasSetup = data.some((d) => d.setup > 0);
-
   return (
     <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
       <h3 className="text-base font-semibold text-slate-900 mb-1">{title}</h3>
@@ -76,9 +72,8 @@ export default function ComparisonChart({ data, title }) {
             iconSize={10}
             formatter={(value) => {
               const map = {
-                labor: "Labor",
+                labor: "Labor (incl. screen setup)",
                 consumables: "Ink / Consumables",
-                setup: "Screen Setup",
                 capex: "CAPEX",
                 others: "Others",
               };
@@ -87,9 +82,6 @@ export default function ComparisonChart({ data, title }) {
           />
           <Bar dataKey="capex" name="capex" stackId="tco" fill={SEG_COLORS.capex} radius={[0, 0, 0, 0]} barSize={52} />
           <Bar dataKey="consumables" name="consumables" stackId="tco" fill={SEG_COLORS.consumables} barSize={52} />
-          {hasSetup && (
-            <Bar dataKey="setup" name="setup" stackId="tco" fill={SEG_COLORS.setup} barSize={52} />
-          )}
           <Bar dataKey="others" name="others" stackId="tco" fill={SEG_COLORS.others} barSize={52} />
           <Bar dataKey="labor" name="labor" stackId="tco" fill={SEG_COLORS.labor} radius={[8, 8, 0, 0]} barSize={52} />
         </BarChart>

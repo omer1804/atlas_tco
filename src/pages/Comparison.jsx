@@ -84,16 +84,14 @@ export default function Comparison() {
     const dKnown = dCapexPerImp + dLaborPerImp + dConsumablesPerImp;
     const dOthers = Math.max(0, d.tco - dKnown);
 
-    // Screen: total is screenCPP, absorb any gap into labor
+    // Screen: merge setup into labor
     const sKnown = screenBreakdown.labor + screenBreakdown.consumables + screenBreakdown.setup;
-    const sOthers = 0;
 
     return [
       {
         name: kornitSystem.name,
         labor: kLaborPerImp,
         consumables: kConsumablesPerImp,
-        setup: 0,
         capex: kCapexPerImp,
         others: kOthers,
       },
@@ -101,15 +99,13 @@ export default function Comparison() {
         name: "DTF",
         labor: dLaborPerImp,
         consumables: dConsumablesPerImp,
-        setup: 0,
         capex: dCapexPerImp,
         others: dOthers,
       },
       {
         name: `Screen (${runLength}pcs, ${numColors}sc)`,
-        labor: screenBreakdown.labor + Math.max(0, screenCPP - sKnown),
+        labor: screenBreakdown.labor + screenBreakdown.setup + Math.max(0, screenCPP - sKnown),
         consumables: screenBreakdown.consumables,
-        setup: screenBreakdown.setup,
         capex: 0,
         others: 0,
       },
