@@ -20,6 +20,7 @@ const FIELDS = [
   { section: "Consumables & Performance", color: "#d1fae5", rows: [
     { key: "consumablesCostPerL", label: "Consumables cost ($/L)", prefix: "$", step: 5 },
     { key: "inkLaydownMlPerPrint", label: "Ink laydown (ml/print)", step: 0.5 },
+    { key: "powderFilmCostPerPrint", label: "Powder + Film cost ($/impression)", prefix: "$", step: 0.01 },
     { key: "printerTPH", label: "Printer throughput (prints/hr)", step: 5 },
     { key: "pressTPH", label: "Press throughput (garments/hr)", step: 5 },
     { key: "availability", label: "Availability", step: 0.01, isPercent: true },

@@ -19,6 +19,7 @@ export const DEFAULT_DTF_INPUTS = {
   // Consumables
   consumablesCostPerL: 50, // mid range $20–$80
   inkLaydownMlPerPrint: 6,  // ml per print
+  powderFilmCostPerPrint: 0.20, // powder + film cost per impression
   // Performance
   printerTPH: 80,   // prints/hr per printer
   pressTPH: 60,     // garments/hr per press
@@ -48,8 +49,11 @@ export function computeDTF(inputs) {
   const totalOperators = inputs.operatorsPrinterCutter + inputs.operatorsMatching + inputs.operatorsPresses;
   const labor5Y = totalOperators * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
 
-  // Consumables ink (5Y) — ml per print → L, × cost/L
-  const consumables5Y = fiveYearImpressions * (inputs.inkLaydownMlPerPrint / 1000) * inputs.consumablesCostPerL;
+  // Consumables ink + powder/film (5Y)
+  const consumables5Y = fiveYearImpressions * (
+    (inputs.inkLaydownMlPerPrint / 1000) * inputs.consumablesCostPerL +
+    inputs.powderFilmCostPerPrint
+  );
 
   // Maintenance (5Y)
   const maintenance5Y = inputs.serviceContractPerYear * 5;
