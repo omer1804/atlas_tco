@@ -128,13 +128,6 @@ export default function Comparison() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-        {/* Step 1 — Kornit system selector */}
-        <KornitSelector
-          systems={allKornitSystems}
-          selectedName={selectedKornit}
-          onSelect={setSelectedKornit}
-        />
-
         {/* Fabric toggle */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Fabric Type</p>
