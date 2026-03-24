@@ -140,31 +140,48 @@ export default function Comparison() {
           )}
         </div>
 
-        {/* Kornit inputs toggle */}
-        <div>
-          <button
-            onClick={() => setShowKornitInputs((v) => !v)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-              showKornitInputs ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-            Edit Kornit Inputs
-            {showKornitInputs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-          {showKornitInputs && (
-            <div className="mt-4">
+        {/* Three-column panels: Kornit + DTF + Screen */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Kornit */}
+          <div className="space-y-3">
+            <button
+              onClick={() => setShowKornitInputs((v) => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl text-sm font-semibold text-blue-700 hover:bg-blue-100 transition-all"
+            >
+              <span>Kornit Settings</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-normal">TCO: ${kornitSystem.tco.toFixed(3)}/imp</span>
+                {showKornitInputs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </div>
+            </button>
+            {showKornitInputs && (
               <InputsPanel
                 systemsInputs={systemsInputs.filter((s) => s.name === selectedKornit)}
                 onUpdate={handleKornitUpdate}
                 onReset={() => setSystemsInputs(DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } })))}
               />
+            )}
+            {/* Kornit summary */}
+            <div className="bg-white rounded-2xl border border-blue-100 p-4 shadow-sm">
+              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-3">Kornit Summary</p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {[
+                  ["Total CAPEX", formatCurrency(kornitSystem.capex.totalCapex)],
+                  ["Throughput", `${kornitSystem.performance.tpt} imp/hr`],
+                  ["Operators", kornitSystem.opex.operatorsPerSystem],
+                  ["Ink/Consumables", `$${kornitSystem.opex.cpp.toFixed(3)}`],
+                  ["Labor 5Y", formatCurrency(kornitSystem.opex.labor)],
+                  ["TCO/impression", `$${kornitSystem.tco.toFixed(3)}`],
+                ].map(([label, value]) => (
+                  <div key={label} className="bg-blue-50 rounded-lg p-2">
+                    <p className="text-blue-400 text-[10px]">{label}</p>
+                    <p className="text-blue-800 font-bold">{value}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Two-column panels for DTF + Screen */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* DTF */}
           <div className="space-y-3">
             <button
