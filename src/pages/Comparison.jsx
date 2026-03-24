@@ -163,7 +163,17 @@ export default function Comparison() {
             </button>
             {showKornitInputs && (
               <InputsPanel
-                systemsInputs={systemsInputs.filter((s) => s.name === selectedKornit)}
+                systemsInputs={systemsInputs
+                  .filter((s) => s.name === selectedKornit)
+                  .map((s) => ({
+                    ...s,
+                    inputs: {
+                      ...s.inputs,
+                      ...(fabric === "polyester"
+                        ? { avgInkLaydown: 6.8, tpt: 80 }
+                        : { avgInkLaydown: 4.7, tpt: 103 }),
+                    },
+                  }))}
                 onUpdate={handleKornitUpdate}
                 onReset={() => setSystemsInputs(DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } })))}
               />
