@@ -21,13 +21,10 @@ export default function Comparison() {
   const [selectedKornit, setSelectedKornit] = useState(DEFAULT_SYSTEMS[0].name);
   const [showKornitInputs, setShowKornitInputs] = useState(false);
 
-  // Apply fabric-dependent overrides to Kornit inputs before computing
+  // Compute systems using current inputs as-is (user can override freely)
   const allKornitSystems = useMemo(() => systemsInputs.map((s) => {
-    const fabricOverrides = fabric === "polyester"
-      ? { avgInkLaydown: 6.8, tpt: 80 }
-      : { avgInkLaydown: 4.7, tpt: 103 };
-    return computeSystem({ ...s, inputs: { ...s.inputs, ...fabricOverrides } });
-  }), [systemsInputs, fabric]);
+    return computeSystem(s);
+  }), [systemsInputs]);
 
   const kornitSystem = useMemo(
     () => allKornitSystems.find((s) => s.name === selectedKornit) || allKornitSystems[0],
@@ -131,7 +128,11 @@ export default function Comparison() {
             {["cotton", "polyester"].map((f) => (
             <button
             key={f}
-            onClick={() => setFabric(f)}
+            onClick={() => {
+              setFabric(f);
+              const overrides = f === "polyester" ? { avgInkLaydown: 6.8, tpt: 80 } : { avgInkLaydown: 4.7, tpt: 103 };
+              setSystemsInputs((prev) => prev.map((s) => ({ ...s, inputs: { ...s.inputs, ...overrides } })));
+            }}
             className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all ${
               fabric === f
                 ? "bg-slate-800 text-white border-slate-800"
@@ -163,17 +164,7 @@ export default function Comparison() {
             </button>
             {showKornitInputs && (
               <InputsPanel
-                systemsInputs={systemsInputs
-                  .filter((s) => s.name === selectedKornit)
-                  .map((s) => ({
-                    ...s,
-                    inputs: {
-                      ...s.inputs,
-                      ...(fabric === "polyester"
-                        ? { avgInkLaydown: 6.8, tpt: 80 }
-                        : { avgInkLaydown: 4.7, tpt: 103 }),
-                    },
-                  }))}
+                systemsInputs={systemsInputs.filter((s) => s.name === selectedKornit)}
                 onUpdate={handleKornitUpdate}
                 onReset={() => setSystemsInputs(DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } })))}
               />
