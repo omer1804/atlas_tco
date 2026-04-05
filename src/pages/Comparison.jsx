@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Settings, ChevronDown, ChevronUp } from "lucide-react";
+import { Settings, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { exportSystemsToCSV } from "../utils/exportToExcel";
 import { computeSystem, DEFAULT_SYSTEMS } from "../components/tco/tcoCalculations";
 import { computeDTF, DEFAULT_DTF_INPUTS, computeScreen, getScreenCPP, getScreenBreakdown } from "../components/tco/competitorCalculations";
 import { formatCurrency, SYSTEM_COLORS } from "../components/tco/tcoData";
@@ -113,9 +114,18 @@ export default function Comparison() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       {/* Header */}
       <div className="border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Technology Comparison</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Kornit Digital vs. DTF vs. Screen Printing · TCO per Impression</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Technology Comparison</h1>
+            <p className="text-sm text-slate-500 mt-0.5">Kornit Digital vs. DTF vs. Screen Printing · TCO per Impression</p>
+          </div>
+          <button
+            onClick={() => exportSystemsToCSV([kornitSystem], systemsInputs.filter((s) => s.name === selectedKornit))}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all"
+          >
+            <Download className="w-4 h-4" />
+            Export Excel
+          </button>
         </div>
       </div>
 
@@ -146,6 +156,32 @@ export default function Comparison() {
           {fabric === "polyester" && (
           <p className="text-xs text-amber-600 mt-2">+$0.20 added to Screen Printing TCO for polyester ink/adhesive.</p>
           )}
+        </div>
+
+        {/* Kornit System Selector */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Select Kornit System</p>
+          <div className="flex flex-wrap gap-2">
+            {allKornitSystems.map((s) => {
+              const active = selectedKornit === s.name;
+              const color = "#3b82f6";
+              return (
+                <button
+                  key={s.name}
+                  onClick={() => setSelectedKornit(s.name)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all"
+                  style={{
+                    backgroundColor: active ? "#3b82f615" : "#f8fafc",
+                    borderColor: active ? color : "#e2e8f0",
+                    color: active ? color : "#94a3b8",
+                  }}
+                >
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: active ? color : "#cbd5e1" }} />
+                  {s.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Three-column panels: Kornit + DTF + Screen */}

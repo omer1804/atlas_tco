@@ -152,18 +152,4 @@ export const DEFAULT_SYSTEMS = [
       tpt: 90, availability: 0.93, utilization: 0.8,
     },
   },
-  {
-    name: "Apollo",
-    inputs: {
-      systemPrice: 1800000, installation: 10000,
-      lifeTime: 5, interestRate: 0,
-      operatorsPerSystem: 1, laborCostPerHr: 18, hrsPerShift: 12,
-      inkCostPerL: 117, functionalConsumablesPerL: 0, fixaCostPerL: 10,
-      avgInkLaydown: 5, fixaLaydown: 35, fixaDilution: 10,
-      serviceContractPerYear: 90000,
-      kwhCost: 0.1, systemPower: 8, systemPowerIdle: 1, dryerPower: 100,
-      sqrFootSystem: 1200, sqrFootDryer: 0, sqrFootCost: 5,
-      tpt: 350, availability: 0.93, utilization: 0.8,
-    },
-  },
 ];
