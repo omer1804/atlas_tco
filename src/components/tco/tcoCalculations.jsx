@@ -127,7 +127,7 @@ export const DEFAULT_SYSTEMS = [
   {
     name: "Atlas MAX Plus",
     inputs: {
-      systemPrice: 650000, installation: 10000,
+      systemPrice: 600000, installation: 10000,
       lifeTime: 5, interestRate: 0,
       operatorsPerSystem: 1, laborCostPerHr: 18, hrsPerShift: 12,
       inkCostPerL: 150, functionalConsumablesPerL: 100, fixaCostPerL: 10,
@@ -135,7 +135,7 @@ export const DEFAULT_SYSTEMS = [
       serviceContractPerYear: 32500,
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
       sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
-      tpt: 120, availability: 0.93, utilization: 0.8,
+      tpt: 100, availability: 0.93, utilization: 0.8,
     },
   },
   {
