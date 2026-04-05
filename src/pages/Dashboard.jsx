@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { DollarSign, TrendingDown, Printer, BarChart3, Settings } from "lucide-react";
+import { DollarSign, TrendingDown, Printer, BarChart3, Settings, Download } from "lucide-react";
+import { exportSystemsToCSV } from "../utils/exportToExcel";
 import KPICard from "../components/tco/KPICard";
 import TCOBarChart from "../components/tco/TCOBarChart";
 import CapexOpexChart from "../components/tco/CapexOpexChart";
@@ -59,17 +60,26 @@ export default function Dashboard() {
             <p className="text-sm text-slate-500 mt-0.5">5-Year Total Cost of Ownership · Standard Electricity</p>
             <Link to="/Comparison" className="text-xs text-blue-500 hover:underline mt-1 inline-block">→ Compare vs DTF &amp; Screen</Link>
           </div>
-          <button
-            onClick={() => setShowInputs((v) => !v)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-              showInputs
-                ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-            Edit Inputs
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => exportSystemsToCSV(systems, systemsInputs)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all"
+            >
+              <Download className="w-4 h-4" />
+              Export Excel
+            </button>
+            <button
+              onClick={() => setShowInputs((v) => !v)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                showInputs
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-200"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              <Settings className="w-4 h-4" />
+              Edit Inputs
+            </button>
+          </div>
         </div>
       </div>
 

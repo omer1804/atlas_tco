@@ -9,10 +9,23 @@ const ROW_GROUPS = [
     rows: [
       { key: "systemPrice", label: "System price [ASP]", prefix: "$", step: 1000 },
       { key: "installation", label: "Installation", prefix: "$", step: 1000 },
-      { key: null, label: "Life time", display: () => "5" },
+      { key: "lifeTime", label: "Life time (years)", step: 1 },
+      { key: "interestRate", label: "Interest rate (%)", step: 0.5, isPercent: true, hint: "PMT annuity method" },
     ],
     totals: [
       { label: "Total CAPEX", fn: (inp) => inp.systemPrice + inp.installation },
+      {
+        label: "Annual CAPEX Payment",
+        fn: (inp) => {
+          const r = inp.interestRate || 0;
+          const n = inp.lifeTime || 5;
+          const pv = inp.systemPrice;
+          if (r === 0) return pv / n;
+          return (pv * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        },
+        prefix: "$",
+        note: "PMT / year",
+      },
     ],
   },
   {
@@ -23,9 +36,9 @@ const ROW_GROUPS = [
       {
         label: "Labor",
         rows: [
-          { key: "operatorsPerSystem", label: "Operator per system", step: 1 },
+          { key: "operatorsPerSystem", label: "Operator per system", step: 0.5 },
           { key: "laborCostPerHr", label: "Labor cost ($/hr)", prefix: "$", step: 1 },
-          { key: "hrsPerShift", label: "#Hr/Shift", step: 1 },
+          { key: "hrsPerShift", label: "Hr/Day", step: 1 },
         ],
         total: { label: "Labor (5Y)", fn: (inp) => inp.operatorsPerSystem * inp.laborCostPerHr * inp.hrsPerShift * 365 * 5 },
       },
@@ -36,7 +49,7 @@ const ROW_GROUPS = [
           { key: "functionalConsumablesPerL", label: "Functional consumables ($/L)", prefix: "$", step: 1 },
           { key: "fixaCostPerL", label: "Fixa Cost ($/L)", prefix: "$", step: 1 },
           { key: "avgInkLaydown", label: "Avg ink Laydown (ml)", step: 0.5 },
-          { key: "fixaLaydown", label: "Fixa laydown", step: 0.5 },
+          { key: "fixaLaydown", label: "Fixa laydown (ml)", step: 0.5 },
           { key: "fixaDilution", label: "Fixa dilution", step: 1 },
         ],
         total: null,
@@ -80,12 +93,6 @@ const ROW_GROUPS = [
   },
 ];
 
-function fmt(val, prefix, isPercent) {
-  if (isPercent) return `${(val * 100).toFixed(0)}%`;
-  if (prefix === "$") return val.toLocaleString();
-  return val;
-}
-
 export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -102,7 +109,7 @@ export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
             <tr className="border-b border-slate-100">
               <th className="text-left py-3 px-4 text-slate-500 font-medium w-56 min-w-[14rem]">Parameter</th>
               {systemsInputs.map((s) => (
-                <th key={s.name} className="text-center py-3 px-3 font-bold min-w-[110px]" style={{ color: SYSTEM_COLORS[s.name] || "#64748b" }}>
+                <th key={s.name} className="text-center py-3 px-3 font-bold min-w-[120px]" style={{ color: SYSTEM_COLORS[s.name] || "#64748b" }}>
                   {s.name}
                 </th>
               ))}
@@ -111,48 +118,46 @@ export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
           <tbody>
             {ROW_GROUPS.map((group) => (
               <React.Fragment key={group.section}>
-                {/* Section header */}
                 <tr>
                   <td colSpan={systemsInputs.length + 1} className="py-2 px-4 font-bold text-slate-800 text-sm" style={{ backgroundColor: group.color }}>
                     {group.section}
                   </td>
                 </tr>
 
-                {/* Direct rows */}
                 {group.rows && group.rows.map((row) => (
                   <tr key={row.label} className="border-t border-slate-50 hover:bg-slate-50/50">
-                    <td className="py-1.5 px-4 text-slate-600 pl-6">{row.prefix && <span className="text-slate-400 mr-1">$</span>}{row.label.replace(/\$\s?/, "")}</td>
+                    <td className="py-1.5 px-4 text-slate-600 pl-6">
+                      {row.label}
+                      {row.hint && <span className="ml-1 text-[9px] text-slate-400">({row.hint})</span>}
+                    </td>
                     {systemsInputs.map((s) => (
                       <td key={s.name} className="py-1 px-2 text-center">
-                        {row.key ? (
-                          <input
-                            type="number"
-                            step={row.step}
-                            value={s.inputs[row.key]}
-                            onChange={(e) => onUpdate(s.name, row.key, parseFloat(e.target.value))}
-                            className="w-full text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                          />
-                        ) : (
-                          <span className="text-slate-500">{row.display ? row.display(s.inputs) : "—"}</span>
-                        )}
+                        <input
+                          type="number"
+                          step={row.step}
+                          value={row.isPercent ? ((s.inputs[row.key] || 0) * 100).toFixed(1) : s.inputs[row.key]}
+                          onChange={(e) => onUpdate(s.name, row.key, row.isPercent ? parseFloat(e.target.value) / 100 : parseFloat(e.target.value))}
+                          className="w-full text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                        />
                       </td>
                     ))}
                   </tr>
                 ))}
 
-                {/* Totals for top-level section */}
                 {group.totals && group.totals.map((total) => (
                   <tr key={total.label} className="border-t-2 border-slate-200" style={{ backgroundColor: group.color }}>
-                    <td className="py-2 px-4 font-bold text-slate-800 pl-4">{total.label}</td>
+                    <td className="py-2 px-4 font-bold text-slate-800 pl-4">
+                      {total.label}
+                      {total.note && <span className="ml-1 text-[9px] font-normal text-slate-500">({total.note})</span>}
+                    </td>
                     {systemsInputs.map((s) => (
                       <td key={s.name} className="py-2 px-2 text-center font-bold text-slate-800">
-                        ${total.fn(s.inputs).toLocaleString()}
+                        ${total.fn(s.inputs).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </td>
                     ))}
                   </tr>
                 ))}
 
-                {/* Subsections (OPEX) */}
                 {group.subsections && group.subsections.map((sub) => (
                   <React.Fragment key={sub.label}>
                     <tr className="border-t border-slate-200">
@@ -181,8 +186,37 @@ export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
                         ))}
                       </tr>
                     ))}
+                    {/* Yearly impressions row after Performance */}
+                    {sub.label === "Labor" && (
+                      <tr className="border-t border-slate-50 bg-green-50/50">
+                        <td className="py-1.5 px-4 text-green-700 pl-8 font-medium">Yearly impressions</td>
+                        {systemsInputs.map((s) => {
+                          const yearly = s.inputs.tpt * s.inputs.availability * s.inputs.utilization * s.inputs.hrsPerShift * 252;
+                          return (
+                            <td key={s.name} className="py-1 px-2 text-center text-green-700 font-semibold">
+                              {Math.round(yearly).toLocaleString()}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    )}
                   </React.Fragment>
                 ))}
+
+                {/* Yearly impressions under Performance section */}
+                {group.section === "Performance" && (
+                  <tr className="border-t border-slate-50 bg-green-50/50">
+                    <td className="py-1.5 px-4 text-green-700 pl-6 font-medium">→ Yearly impressions</td>
+                    {systemsInputs.map((s) => {
+                      const yearly = s.inputs.tpt * s.inputs.availability * s.inputs.utilization * s.inputs.hrsPerShift * 252;
+                      return (
+                        <td key={s.name} className="py-1 px-2 text-center text-green-700 font-semibold">
+                          {Math.round(yearly).toLocaleString()}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                )}
               </React.Fragment>
             ))}
           </tbody>

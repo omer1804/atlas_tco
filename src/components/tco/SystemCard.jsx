@@ -26,7 +26,9 @@ export default function SystemCard({ system, index }) {
         <div className="grid grid-cols-2 gap-3 text-sm">
           <Stat icon={DollarSign} label="5Y Investment" value={formatCurrency(system.total5YInvestment)} color={color} />
           <Stat icon={DollarSign} label="System Price" value={formatCurrency(system.capex.systemPrice)} color={color} />
-          <Stat icon={Cpu} label="TPT (imp/hr)" value={formatNumber(system.performance.tpt)} color={color} />
+          <Stat icon={Cpu} label="TPT (imp/hr)" value={
+            <span>{formatNumber(system.performance.tpt)} <span className="text-[10px] font-normal text-slate-400">({formatNumber(Math.round(system.performance.yearly))}/yr)</span></span>
+          } color={color} />
           <Stat icon={Users} label="Operators" value={system.opex.operatorsPerSystem} color={color} />
           <Stat icon={Droplets} label="Ink Cost" value={formatCurrency(system.opex.ink)} color={color} />
           <Stat icon={Zap} label="Energy" value={formatCurrency(system.opex.energyConsumption)} color={color} />
