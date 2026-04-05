@@ -320,14 +320,9 @@ export default function Comparison() {
           </div>
         </div>
 
-        {/* Context note for screen */}
-        <div className="bg-purple-50 border border-purple-100 rounded-2xl p-5 text-sm text-purple-700">
-          <p className="font-semibold mb-1">Screen Printing Variability</p>
-          <p className="text-xs leading-relaxed">
-            Screen printing TCO ranges from <b>$0.37</b> (500 pieces, 1 screen) to <b>$182+</b> (10 pieces, 14 screens).
-            The table shows actual TCO based on amortized setup costs. For long runs with few colors it can be competitive;
-            for short runs or complex designs, digital printing (Kornit/DTF) is significantly more cost-effective.
-          </p>
+        {/* Disclaimer */}
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xs text-slate-500 text-center">
+          All calculations are based on assumptions, estimates, and inputs provided, and cannot be taken as definitive results or contractual commitments.
         </div>
 
       </div>
