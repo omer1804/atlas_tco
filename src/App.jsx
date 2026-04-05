@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Dashboard from './pages/Dashboard';
 import Comparison from './pages/Comparison';
+import PasswordGate from './components/PasswordGate';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -34,12 +35,14 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <PasswordGate>
     <Routes>
       <Route path="/" element={<Navigate to="/Dashboard" replace />} />
       <Route path="/Dashboard" element={<Dashboard />} />
       <Route path="/Comparison" element={<Comparison />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </PasswordGate>
   );
 };
 
