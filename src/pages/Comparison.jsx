@@ -64,17 +64,18 @@ export default function Comparison() {
   // ── Screen state ──────────────────────────────────────────────────────────
   const [runLength, setRunLength] = useState(100);
   const [numColors, setNumColors] = useState(7);
+  const [screenLaborCost, setScreenLaborCost] = useState(20);
   const [showScreenInputs, setShowScreenInputs] = useState(false);
 
   const screenCPP = useMemo(
-    () => getScreenCPP(runLength, numColors) + (fabric === "polyester" ? 0.2 : 0),
-    [runLength, numColors, fabric]
+    () => getScreenCPP(runLength, numColors, screenLaborCost) + (fabric === "polyester" ? 0.2 : 0),
+    [runLength, numColors, fabric, screenLaborCost]
   );
 
   // ── Chart data (stacked: labor / consumables / setup / capex) ──────────────
   const screenBreakdown = useMemo(
-    () => getScreenBreakdown(runLength, numColors, fabric === "polyester" ? 0.2 : 0),
-    [runLength, numColors, fabric]
+    () => getScreenBreakdown(runLength, numColors, fabric === "polyester" ? 0.2 : 0, screenLaborCost),
+    [runLength, numColors, fabric, screenLaborCost]
   );
 
   const chartData = useMemo(() => {
@@ -264,6 +265,8 @@ export default function Comparison() {
                 onRunLengthChange={setRunLength}
                 onNumColorsChange={setNumColors}
                 fabric={fabric}
+                laborCostPerHr={screenLaborCost}
+                onLaborCostChange={setScreenLaborCost}
               />
             )}
           </div>
@@ -323,8 +326,8 @@ export default function Comparison() {
                 {[
                   ["Run Length", `${runLength} pcs`],
                   ["# Screens", `${numColors}`],
-                  ["Low-run TCO", `${sym}${convert(getScreenCPP(10, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (10pcs)`],
-                  ["High-run TCO", `${sym}${convert(getScreenCPP(500, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (500pcs)`],
+                  ["Low-run TCO", `${sym}${convert(getScreenCPP(10, numColors, screenLaborCost) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (10pcs)`],
+                  ["High-run TCO", `${sym}${convert(getScreenCPP(500, numColors, screenLaborCost) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (500pcs)`],
                   ["TCO/imp", `${sym}${convert(screenCPP).toFixed(3)}`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center border-b border-purple-50 pb-1 last:border-0 last:pb-0">
