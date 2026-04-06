@@ -128,12 +128,12 @@ export default function Dashboard() {
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TCOBarChart data={tcoChartData} dataKey="TCO" title={`TCO per Impression (${currency.code})`} yAxisLabel={`${currency.symbol}/impression`} />
+          <TCOBarChart data={tcoChartData} dataKey="TCO" title={`TCO per Impression (${currency.code})`} yAxisLabel={`${currency.symbol}/impression`} currencySymbol={currency.symbol} />
           <CapexOpexChart systems={systems} title="CAPEX vs OPEX Breakdown" convert={convert} currencySymbol={currency.symbol} />
         </div>
 
         {/* Investment */}
-        <TCOBarChart data={investmentChartData} dataKey="Investment" title={`Total 5-Year Investment (${currency.code})`} yAxisLabel={currency.symbol} />
+        <TCOBarChart data={investmentChartData} dataKey="Investment" title={`Total 5-Year Investment (${currency.code})`} yAxisLabel={currency.symbol} currencySymbol={currency.symbol} />
 
         {/* Performance Table */}
         <PerformanceTable systems={systems} title="Performance & Cost Comparison" convert={convert} currencySymbol={currency.symbol} />
