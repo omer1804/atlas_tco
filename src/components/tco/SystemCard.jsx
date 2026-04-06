@@ -64,7 +64,7 @@ export default function SystemCard({ system, index, convert = (v) => v, currency
           {sellingPrice !== "" && parseFloat(sellingPrice) > 0 && (() => {
             const price = parseFloat(sellingPrice);
             const revenue = price * system.performance.fiveYear;
-            const netProfit = revenue - system.total5YInvestment;
+            const netProfit = revenue - convert(system.total5YInvestment);
             const isPositive = netProfit >= 0;
             return (
               <div className="rounded-xl p-3 space-y-1.5" style={{ backgroundColor: `${color}08`, border: `1px solid ${color}20` }}>
