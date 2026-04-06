@@ -13,7 +13,7 @@ const SEG_COLORS = {
   others: "#94a3b8",      // slate — maintenance, energy, footprint, etc.
 };
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, convert = (v) => v, currencySymbol = "$" }) => {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
   const labels = {
@@ -31,18 +31,18 @@ const CustomTooltip = ({ active, payload, label }) => {
             <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: p.fill }} />
             {labels[p.dataKey] || p.dataKey}
           </span>
-          <span className="font-bold">${p.value.toFixed(3)}</span>
+          <span className="font-bold">{currencySymbol}{convert(p.value).toFixed(3)}</span>
         </div>
       ))}
       <div className="flex justify-between text-xs pt-1.5 mt-1 border-t border-slate-700 font-bold">
         <span>Total TCO</span>
-        <span>${total.toFixed(3)}</span>
+        <span>{currencySymbol}{convert(total).toFixed(3)}</span>
       </div>
     </div>
   );
 };
 
-export default function ComparisonChart({ data, title }) {
+export default function ComparisonChart({ data, title, convert = (v) => v, currencySymbol = "$" }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
       <h3 className="text-base font-semibold text-slate-900 mb-1">{title}</h3>
@@ -63,9 +63,9 @@ export default function ComparisonChart({ data, title }) {
             tick={{ fill: "#64748b", fontSize: 11 }}
             axisLine={false}
             tickLine={false}
-            tickFormatter={(v) => `$${v.toFixed(2)}`}
+            tickFormatter={(v) => `${currencySymbol}${convert(v).toFixed(2)}`}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip convert={convert} currencySymbol={currencySymbol} />} />
           <Legend
             verticalAlign="top"
             iconType="square"

@@ -11,8 +11,20 @@ import DTFInputsPanel from "../components/tco/DTFInputsPanel";
 import ScreenInputsPanel from "../components/tco/ScreenInputsPanel";
 import ComparisonChart from "../components/tco/ComparisonChart";
 import ComparisonCards from "../components/tco/ComparisonCards";
+import { useCurrency } from "../lib/CurrencyContext";
 
 export default function Comparison() {
+  const { convert, currency } = useCurrency();
+  const sym = currency.symbol;
+
+  // helper: format a USD value into converted currency string
+  function fmt(usdValue) {
+    const val = convert(usdValue);
+    if (Math.abs(val) >= 1000000) return `${sym}${(val / 1000000).toFixed(2)}M`;
+    if (Math.abs(val) >= 1000) return `${sym}${(val / 1000).toFixed(0)}K`;
+    return `${sym}${val.toFixed(2)}`;
+  }
+
   // ── Fabric type (must be first — used by Kornit useMemo below) ────────────
   const [fabric, setFabric] = useState("cotton"); // "cotton" | "polyester"
 
@@ -198,7 +210,7 @@ export default function Comparison() {
             >
               <span>Kornit Settings</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-normal">TCO: ${kornitSystem.tco.toFixed(3)}/imp</span>
+                <span className="text-xs font-normal">TCO: {sym}{convert(kornitSystem.tco).toFixed(3)}/imp</span>
                 {showKornitInputs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </div>
             </button>
@@ -219,7 +231,7 @@ export default function Comparison() {
             >
               <span>DTF Settings</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-normal">TCO: ${dtfResult.tco.toFixed(2)}/imp</span>
+                <span className="text-xs font-normal">TCO: {sym}{convert(dtfResult.tco).toFixed(2)}/imp</span>
                 {showDTFInputs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </div>
             </button>
@@ -240,7 +252,7 @@ export default function Comparison() {
             >
               <span>Screen Printing Settings</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-normal">TCO: ${screenCPP.toFixed(2)}</span>
+                <span className="text-xs font-normal">TCO: {sym}{convert(screenCPP).toFixed(2)}</span>
                 {showScreenInputs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </div>
             </button>
@@ -260,7 +272,7 @@ export default function Comparison() {
         <div className="flex gap-6 items-stretch">
           {/* Chart — left, takes majority of width */}
           <div className="flex-1 min-w-0">
-            <ComparisonChart data={chartData} title="TCO Comparison" />
+            <ComparisonChart data={chartData} title="TCO Comparison" convert={convert} currencySymbol={sym} />
           </div>
 
           {/* Summary cards — right, stacked vertically, same height as chart */}
@@ -270,11 +282,11 @@ export default function Comparison() {
               <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-2">{kornitSystem.name}</p>
               <div className="flex flex-col gap-1.5 flex-1 justify-around text-xs">
                 {[
-                  ["CAPEX", formatCurrency(kornitSystem.capex.totalCapex)],
+                  ["CAPEX", fmt(kornitSystem.capex.totalCapex)],
                   ["Throughput", `${kornitSystem.performance.tpt} imp/hr`],
-                  ["Ink/imp", `$${kornitSystem.opex.cpp.toFixed(3)}`],
-                  ["Labor 5Y", formatCurrency(kornitSystem.opex.labor)],
-                  ["TCO/imp", `$${kornitSystem.tco.toFixed(3)}`],
+                  ["Ink/imp", `${sym}${convert(kornitSystem.opex.cpp).toFixed(3)}`],
+                  ["Labor 5Y", fmt(kornitSystem.opex.labor)],
+                  ["TCO/imp", `${sym}${convert(kornitSystem.tco).toFixed(3)}`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center border-b border-blue-50 pb-1 last:border-0 last:pb-0">
                     <span className="text-slate-500">{label}</span>
@@ -289,11 +301,11 @@ export default function Comparison() {
               <p className="text-xs font-semibold text-orange-500 uppercase tracking-wider mb-2">DTF</p>
               <div className="flex flex-col gap-1.5 flex-1 justify-around text-xs">
                 {[
-                  ["CAPEX", formatCurrency(dtfResult.totalCapex)],
+                  ["CAPEX", fmt(dtfResult.totalCapex)],
                   ["Throughput", `${dtfResult.effectiveTPH.toFixed(0)} imp/hr`],
-                  ["Consumables/imp", `$${dtfResult.cpp.toFixed(3)}`],
-                  ["Labor 5Y", formatCurrency(dtfResult.labor5Y)],
-                  ["TCO/imp", `$${dtfResult.tco.toFixed(3)}`],
+                  ["Consumables/imp", `${sym}${convert(dtfResult.cpp).toFixed(3)}`],
+                  ["Labor 5Y", fmt(dtfResult.labor5Y)],
+                  ["TCO/imp", `${sym}${convert(dtfResult.tco).toFixed(3)}`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center border-b border-orange-50 pb-1 last:border-0 last:pb-0">
                     <span className="text-slate-500">{label}</span>
@@ -310,9 +322,9 @@ export default function Comparison() {
                 {[
                   ["Run Length", `${runLength} pcs`],
                   ["# Screens", `${numColors}`],
-                  ["Low-run TCO", `$${(getScreenCPP(10, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (10pcs)`],
-                  ["High-run TCO", `$${(getScreenCPP(500, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (500pcs)`],
-                  ["TCO/imp", `$${screenCPP.toFixed(3)}`],
+                  ["Low-run TCO", `${sym}${convert(getScreenCPP(10, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (10pcs)`],
+                  ["High-run TCO", `${sym}${convert(getScreenCPP(500, numColors) + (fabric === "polyester" ? 0.2 : 0)).toFixed(2)} (500pcs)`],
+                  ["TCO/imp", `${sym}${convert(screenCPP).toFixed(3)}`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center border-b border-purple-50 pb-1 last:border-0 last:pb-0">
                     <span className="text-slate-500">{label}</span>
@@ -333,7 +345,7 @@ export default function Comparison() {
 
       <div className="border-t border-slate-100 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <p className="text-xs text-slate-400 text-center">Technology Comparison · 5-Year Projection · All costs in USD</p>
+          <p className="text-xs text-slate-400 text-center">Technology Comparison · 5-Year Projection · All costs in {currency.code}</p>
         </div>
       </div>
     </div>
