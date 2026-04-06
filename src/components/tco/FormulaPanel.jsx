@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChevronDown, ChevronUp, BookOpen } from "lucide-react";
 
 export default function FormulaPanel() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <div className="bg-white rounded-2xl border border-blue-200 shadow-sm overflow-hidden">
