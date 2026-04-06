@@ -1,45 +1,24 @@
 import React, { useState } from "react";
-import { X, BookOpen } from "lucide-react";
+import { ChevronDown, ChevronUp, BookOpen } from "lucide-react";
 
 export default function FormulaPanel() {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      {/* Trigger button */}
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
       <button
-        onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors"
       >
-        <BookOpen className="w-4 h-4" />
-        See Calculation
+        <div className="flex items-center gap-2">
+          <BookOpen className="w-4 h-4 text-blue-500" />
+          <span className="text-sm font-semibold text-slate-700">See How it was Calculated</span>
+        </div>
+        {open ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
       </button>
 
-      {/* Overlay */}
       {open && (
-        <div
-          className="fixed inset-0 bg-black/30 z-40"
-          onClick={() => setOpen(false)}
-        />
-      )}
-
-      {/* Side panel */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-2xl z-50 transform transition-transform duration-300 overflow-y-auto ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between z-10">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-bold text-slate-900">TCO Calculation Formulas</h2>
-          </div>
-          <button onClick={() => setOpen(false)} className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
-            <X className="w-5 h-5 text-slate-500" />
-          </button>
-        </div>
-
-        <div className="px-6 py-6 space-y-8 text-sm">
+        <div className="px-6 pb-6 space-y-8 text-sm border-t border-slate-100 pt-5">
 
           {/* Kornit */}
           <section>
@@ -100,8 +79,8 @@ export default function FormulaPanel() {
           </section>
 
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
 

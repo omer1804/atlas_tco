@@ -66,7 +66,6 @@ export default function Dashboard() {
             <Link to="/Comparison" className="text-xs text-blue-500 hover:underline mt-1 inline-block">→ Compare vs DTF &amp; Screen</Link>
           </div>
           <div className="flex items-center gap-3 flex-wrap justify-end">
-            <FormulaPanel />
             <CurrencySelector />
             <button
               onClick={() => exportSystemsToCSV(systems, systemsInputs)}
@@ -136,6 +135,9 @@ export default function Dashboard() {
 
         {/* Investment */}
         <TCOBarChart data={investmentChartData} dataKey="Investment" title={`Total 5-Year Investment (${currency.code})`} yAxisLabel={currency.symbol} currencySymbol={currency.symbol} />
+
+        {/* Formula Panel trigger */}
+        <FormulaPanel />
 
         {/* Performance Table */}
         <PerformanceTable systems={systems} title="Performance & Cost Comparison" convert={convert} currencySymbol={currency.symbol} />

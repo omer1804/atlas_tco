@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useCurrency } from "../../lib/CurrencyContext";
+import { CURRENCIES, useCurrency } from "../../lib/CurrencyContext";
 
 export default function CurrencySelector() {
-  const { currency, setCurrency, rate, setRate, CURRENCIES } = useCurrency();
+  const { currency, setCurrency, setRate } = useCurrency();
 
   const [localCode, setLocalCode] = useState(currency.code);
-  const [localRate, setLocalRate] = useState(rate);
+  const [localRate, setLocalRate] = useState(1);
 
   function handleApply() {
     const selected = CURRENCIES.find((c) => c.code === localCode);
