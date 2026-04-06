@@ -22,8 +22,8 @@ export function computeSystem(s) {
     ? inputs.systemPrice * (1 - 5 / lifeTime)  // straight-line residual after 5Y
     : 0; // when financed, asset is fully expensed via payments
 
-  // Performance — uses 252 working days/year
-  const workingDays = 252;
+  // Performance — uses workingDays/year (default 252)
+  const workingDays = inputs.workingDays || 252;
   const yearlyImpressions = inputs.tpt * inputs.availability * inputs.utilization * inputs.hrsPerShift * workingDays;
   const fiveYearImpressions = yearlyImpressions * 5;
 
@@ -41,7 +41,7 @@ export function computeSystem(s) {
   // Maintenance (5Y)
   const maintenance5Y = inputs.serviceContractPerYear * 5;
 
-  // Energy (5Y)
+  // Energy (5Y) — uses workingDays
   const energyHrsPerYear = inputs.hrsPerShift * workingDays;
   const energyKwh5Y = (inputs.systemPower + inputs.dryerPower) * energyHrsPerYear * 5;
   const energy5Y = energyKwh5Y * inputs.kwhCost;
@@ -122,6 +122,7 @@ export const DEFAULT_SYSTEMS = [
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
       sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
       tpt: 103, availability: 0.93, utilization: 0.8,
+      workingDays: 252,
     },
   },
   {
@@ -136,6 +137,7 @@ export const DEFAULT_SYSTEMS = [
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
       sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
       tpt: 100, availability: 0.93, utilization: 0.8,
+      workingDays: 252,
     },
   },
   {
@@ -150,6 +152,7 @@ export const DEFAULT_SYSTEMS = [
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,
       sqrFootSystem: 90, sqrFootDryer: 90, sqrFootCost: 5,
       tpt: 90, availability: 0.93, utilization: 0.8,
+      workingDays: 252,
     },
   },
 ];

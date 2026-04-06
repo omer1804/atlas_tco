@@ -89,6 +89,7 @@ const ROW_GROUPS = [
       { key: "tpt", label: "TPT - impression per hour", step: 5 },
       { key: "availability", label: "Availability", step: 0.01, isPercent: true },
       { key: "utilization", label: "Utilization", step: 0.01, isPercent: true },
+      { key: "workingDays", label: "Working days / year", step: 1 },
     ],
   },
 ];
@@ -191,7 +192,7 @@ export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
                       <tr className="border-t border-slate-50 bg-green-50/50">
                         <td className="py-1.5 px-4 text-green-700 pl-8 font-medium">Yearly impressions</td>
                         {systemsInputs.map((s) => {
-                          const yearly = s.inputs.tpt * s.inputs.availability * s.inputs.utilization * s.inputs.hrsPerShift * 252;
+                          const yearly = s.inputs.tpt * s.inputs.availability * s.inputs.utilization * s.inputs.hrsPerShift * (s.inputs.workingDays || 252);
                           return (
                             <td key={s.name} className="py-1 px-2 text-center text-green-700 font-semibold">
                               {Math.round(yearly).toLocaleString()}
@@ -208,7 +209,7 @@ export default function InputsPanel({ systemsInputs, onUpdate, onReset }) {
                   <tr className="border-t border-slate-50 bg-green-50/50">
                     <td className="py-1.5 px-4 text-green-700 pl-6 font-medium">→ Yearly impressions</td>
                     {systemsInputs.map((s) => {
-                      const yearly = s.inputs.tpt * s.inputs.availability * s.inputs.utilization * s.inputs.hrsPerShift * 252;
+                      const yearly = s.inputs.tpt * s.inputs.availability * s.inputs.utilization * s.inputs.hrsPerShift * (s.inputs.workingDays || 252);
                       return (
                         <td key={s.name} className="py-1 px-2 text-center text-green-700 font-semibold">
                           {Math.round(yearly).toLocaleString()}
