@@ -11,6 +11,7 @@ import DTFInputsPanel from "../components/tco/DTFInputsPanel";
 import ScreenInputsPanel from "../components/tco/ScreenInputsPanel";
 import ComparisonChart from "../components/tco/ComparisonChart";
 import ComparisonCards from "../components/tco/ComparisonCards";
+import FormulaPanel from "../components/tco/FormulaPanel";
 import { useCurrency } from "../lib/CurrencyContext";
 
 export default function Comparison() {
@@ -335,6 +336,9 @@ export default function Comparison() {
             </div>
           </div>
         </div>
+
+        {/* Formula Panel */}
+        <FormulaPanel />
 
         {/* Disclaimer */}
         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-xs text-slate-500 text-center">
