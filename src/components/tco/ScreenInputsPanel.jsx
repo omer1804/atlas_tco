@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { RotateCcw, AlertCircle } from "lucide-react";
-import { SCREEN_MAX_COLORS, getScreenCPP, getClosestLaborTier, SCREEN_LABOR_TIERS } from "./competitorCalculations";
+import { AlertCircle } from "lucide-react";
+import { SCREEN_MAX_COLORS, getScreenCPP } from "./competitorCalculations";
 
 export default function ScreenInputsPanel({ runLength, numColors, onRunLengthChange, onNumColorsChange, fabric, laborCostPerHr, onLaborCostChange }) {
-  const [laborInput, setLaborInput] = React.useState(laborCostPerHr ?? 20);
-  const activeTier = getClosestLaborTier(laborInput);
+  const [laborInput, setLaborInput] = useState(laborCostPerHr ?? 20);
   const baseCpp = getScreenCPP(runLength, numColors, laborInput);
   const cpp = baseCpp + (fabric === "polyester" ? 0.2 : 0);
 
@@ -22,32 +21,19 @@ export default function ScreenInputsPanel({ runLength, numColors, onRunLengthCha
         {/* Labor cost input */}
         <div>
           <label className="text-xs font-medium text-slate-600 block mb-1">Labor Cost ($/hr)</label>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              min={1}
-              step={1}
-              value={laborInput}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value) || 1;
-                setLaborInput(val);
-                onLaborCostChange && onLaborCostChange(val);
-              }}
-              className="w-24 text-center border border-slate-200 rounded-lg px-2 py-1.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            <span className="text-xs text-slate-500">→ using <span className="font-bold text-purple-600">${activeTier}/hr</span> table</span>
-          </div>
-          <div className="flex gap-1 mt-2">
-            {SCREEN_LABOR_TIERS.map((t) => (
-              <button
-                key={t}
-                onClick={() => { setLaborInput(t); onLaborCostChange && onLaborCostChange(t); }}
-                className={`text-xs px-2 py-0.5 rounded border transition-all ${activeTier === t ? "bg-purple-600 text-white border-purple-600" : "border-slate-200 text-slate-500 hover:border-purple-300"}`}
-              >
-                ${t}
-              </button>
-            ))}
-          </div>
+          <input
+            type="number"
+            min={1}
+            max={25}
+            step={1}
+            value={laborInput}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value) || 1;
+              setLaborInput(val);
+              onLaborCostChange && onLaborCostChange(val);
+            }}
+            className="w-24 text-center border border-slate-200 rounded-lg px-2 py-1.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
         </div>
 
         <div>

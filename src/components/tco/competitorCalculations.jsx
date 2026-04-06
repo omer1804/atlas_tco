@@ -163,9 +163,58 @@ export function computeScreen(inputs) {
   };
 }
 
-// Screen CPP lookup tables by labor cost tier ($/hr)
-// Rows = run lengths, Cols = num colors 1–14
+// ─── SCREEN CPP: computed directly from formula (no hardcoded tiers) ────────
+// This replaces the old lookup tables. CPP is calculated for any labor rate.
 
+const SCREEN_TPH = 400;
+const SCREEN_OPERATORS = 2;
+const SCREEN_PREP_COST = 15;       // $ per screen (supplies)
+const SCREEN_SETUP_MINS = 7;       // minutes to set up 1 screen
+const SCREEN_INK_ADHESIVE = 0.10;  // $/print (consumables)
+
+function computeScreenCPP(runLength, numColors, laborCostPerHr) {
+  const laborPerPrint = (SCREEN_OPERATORS * laborCostPerHr) / SCREEN_TPH;
+  const setupCostPerJob = numColors * (
+    SCREEN_PREP_COST + (SCREEN_SETUP_MINS / 60) * laborCostPerHr * SCREEN_OPERATORS
+  );
+  const setupPerPrint = setupCostPerJob / runLength;
+  return laborPerPrint + SCREEN_INK_ADHESIVE + setupPerPrint;
+}
+
+export function getScreenCPP(runLength, numColors, laborCostPerHr = 20) {
+  const rl = Math.max(1, runLength);
+  const nc = Math.min(Math.max(Math.round(numColors), 1), SCREEN_MAX_COLORS);
+  return computeScreenCPP(rl, nc, laborCostPerHr);
+}
+
+export function getScreenBreakdown(runLength, numColors, polyesterAddon = 0, laborCostPerHr = 20) {
+  const laborPerPrint = (SCREEN_OPERATORS * laborCostPerHr) / SCREEN_TPH;
+  const consumablesPerPrint = SCREEN_INK_ADHESIVE + polyesterAddon;
+  const setupCostPerJob = numColors * (
+    SCREEN_PREP_COST + (SCREEN_SETUP_MINS / 60) * laborCostPerHr * SCREEN_OPERATORS
+  );
+  const setupPerPrint = setupCostPerJob / runLength;
+  return {
+    labor: laborPerPrint,
+    consumables: consumablesPerPrint,
+    setup: setupPerPrint,
+    capex: 0,
+    total: laborPerPrint + consumablesPerPrint + setupPerPrint,
+  };
+}
+
+// Legacy exports kept for any remaining references
+export const SCREEN_LABOR_TIERS = [5, 10, 15, 20];
+export function getClosestLaborTier(laborCost) {
+  return SCREEN_LABOR_TIERS.reduce((best, tier) => Math.abs(tier - laborCost) < Math.abs(best - laborCost) ? tier : best, SCREEN_LABOR_TIERS[0]);
+}
+export const SCREEN_RUN_LENGTHS = [10, 20, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500];
+export const SCREEN_MAX_COLORS = 14;
+
+// ── OLD HARDCODED TABLES REMOVED — all CPP now computed via formula above ──
+
+// (keeping old constant name for any stray imports)
+export const SCREEN_CPP_TABLE = {};
 export const SCREEN_CPP_TABLES = {
   5: {
     10:   [1.78, 4.92, 8.76, 14.64, 22.03, 30.92, 39.51, 51.14, 64.28, 78.92, 92.26, 109.64, 128.53, 148.91],
@@ -308,68 +357,3 @@ export const SCREEN_CPP_TABLES = {
     1500: [0.30, 0.31, 0.33, 0.35, 0.36, 0.38, 0.40, 0.41, 0.43, 0.45, 0.46, 0.48, 0.50, 0.51],
   },
 };
-
-// Available labor cost tiers
-export const SCREEN_LABOR_TIERS = [5, 10, 15, 20];
-
-// Select the closest labor tier (rounds to nearest: <7.5→5, 7.5-12.5→10, 12.5-17.5→15, >17.5→20)
-export function getClosestLaborTier(laborCost) {
-  const tiers = SCREEN_LABOR_TIERS;
-  return tiers.reduce((best, tier) => Math.abs(tier - laborCost) < Math.abs(best - laborCost) ? tier : best, tiers[0]);
-}
-
-export const SCREEN_RUN_LENGTHS = [10, 20, 50, 75, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500];
-export const SCREEN_MAX_COLORS = 14;
-
-// Legacy table (kept for fallback)
-export const SCREEN_CPP_TABLE = SCREEN_CPP_TABLES[20];
-
-// Returns a TCO breakdown for screen printing
-export function getScreenBreakdown(runLength, numColors, polyesterAddon = 0, laborCostPerHr = 20) {
-  const tph = 400;
-  const laborPerCarousel = 2;
-  const prepCostPerScreen = 15;
-  const screenSetupTimeMins = 7;
-
-  const laborPerPrint = (laborPerCarousel * laborCostPerHr) / tph;
-  const consumablesPerPrint = 0.10 + polyesterAddon;
-  const setupCostPerJob = numColors * (
-    prepCostPerScreen + (screenSetupTimeMins / 60) * laborCostPerHr * laborPerCarousel
-  );
-  const setupPerPrint = setupCostPerJob / runLength;
-  const capexPerPrint = 0;
-
-  return {
-    labor: laborPerPrint,
-    consumables: consumablesPerPrint,
-    setup: setupPerPrint,
-    capex: capexPerPrint,
-    total: laborPerPrint + consumablesPerPrint + setupPerPrint,
-  };
-}
-
-// Get CPP from table, interpolating between nearest run lengths
-// laborCostPerHr: uses closest tier table
-export function getScreenCPP(runLength, numColors, laborCostPerHr = 20) {
-  const tier = getClosestLaborTier(laborCostPerHr);
-  const table = SCREEN_CPP_TABLES[tier];
-  const allLengths = Object.keys(table).map(Number).sort((a, b) => a - b);
-  const colorIdx = Math.min(Math.max(Math.round(numColors) - 1, 0), SCREEN_MAX_COLORS - 1);
-
-  // Clamp
-  if (runLength <= allLengths[0]) return table[allLengths[0]][colorIdx];
-  if (runLength >= allLengths[allLengths.length - 1]) return table[allLengths[allLengths.length - 1]][colorIdx];
-
-  // Find surrounding rows and interpolate
-  let lower = allLengths[0], upper = allLengths[allLengths.length - 1];
-  for (let i = 0; i < allLengths.length - 1; i++) {
-    if (runLength >= allLengths[i] && runLength <= allLengths[i + 1]) {
-      lower = allLengths[i];
-      upper = allLengths[i + 1];
-      break;
-    }
-  }
-
-  const t = (runLength - lower) / (upper - lower);
-  return table[lower][colorIdx] + t * (table[upper][colorIdx] - table[lower][colorIdx]);
-}
