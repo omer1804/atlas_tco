@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { formatCurrency, formatNumber, SYSTEM_COLORS } from "./tcoData";
-import { DollarSign, Cpu, Zap, Users, Droplets, Wrench, ShoppingBag } from "lucide-react";
+import { formatNumber, SYSTEM_COLORS } from "./tcoData";
+import { DollarSign, Cpu, Zap, Users, Droplets, Wrench } from "lucide-react";
 
 export default function SystemCard({ system, index, convert = (v) => v, currencySymbol = "$" }) {
   const color = SYSTEM_COLORS[system.name] || "#64748b";
@@ -40,51 +40,6 @@ export default function SystemCard({ system, index, convert = (v) => v, currency
           <Stat icon={Zap} label="Energy" value={fmt(system.opex.energyConsumption)} color={color} />
           <Stat icon={Wrench} label="Maintenance" value={fmt(system.opex.maintenance)} color={color} />
           <Stat icon={Cpu} label="5Y Impressions" value={formatNumber(system.performance.fiveYear)} color={color} />
-        </div>
-
-        {/* Profit Calculator */}
-        <div className="mt-4 pt-4 border-t border-slate-100">
-          <div className="flex items-center gap-2 mb-3">
-            <ShoppingBag className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-xs font-medium text-slate-600">Profit Calculator</span>
-          </div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs text-slate-500 whitespace-nowrap">Selling price / shirt ({currencySymbol})</span>
-            <input
-              type="number"
-              min="0"
-              step="0.1"
-              value={sellingPrice}
-              onChange={(e) => setSellingPrice(e.target.value)}
-              placeholder="e.g. 15"
-              className="w-full border border-slate-200 rounded-lg py-1.5 px-2 text-xs focus:outline-none focus:ring-2 focus:border-transparent"
-              style={{ "--tw-ring-color": color }}
-            />
-          </div>
-          {sellingPrice !== "" && parseFloat(sellingPrice) > 0 && (() => {
-            const price = parseFloat(sellingPrice);
-            const revenue = price * system.performance.fiveYear;
-            const netProfit = revenue - convert(system.total5YInvestment);
-            const isPositive = netProfit >= 0;
-            return (
-              <div className="rounded-xl p-3 space-y-1.5" style={{ backgroundColor: `${color}08`, border: `1px solid ${color}20` }}>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">5Y Revenue</span>
-                  <span className="font-semibold text-slate-800">{fmt(revenue)}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">− 5Y Investment</span>
-                  <span className="text-slate-500">− {fmt(system.total5YInvestment)}</span>
-                </div>
-                <div className="border-t pt-1.5 flex justify-between text-xs font-bold" style={{ borderColor: `${color}30` }}>
-                  <span style={{ color }}>Net Profit</span>
-                  <span style={{ color: isPositive ? "#10b981" : "#ef4444" }}>
-                    {isPositive ? "+" : ""}{fmt(netProfit)}
-                  </span>
-                </div>
-              </div>
-            );
-          })()}
         </div>
 
         <div className="mt-4 pt-4 border-t border-slate-100">

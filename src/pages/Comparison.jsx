@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { Settings, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { ChevronDown, ChevronUp, Download } from "lucide-react";
 import { exportSystemsToCSV } from "../utils/exportToExcel";
+import CurrencySelector from "../components/tco/CurrencySelector";
 import { computeSystem, DEFAULT_SYSTEMS } from "../components/tco/tcoCalculations";
 import { computeDTF, DEFAULT_DTF_INPUTS, computeScreen, getScreenCPP, getScreenBreakdown } from "../components/tco/competitorCalculations";
 import { formatCurrency, SYSTEM_COLORS } from "../components/tco/tcoData";
@@ -119,13 +120,16 @@ export default function Comparison() {
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Technology Comparison</h1>
             <p className="text-sm text-slate-500 mt-0.5">Kornit Digital vs. DTF vs. Screen Printing · TCO per Impression</p>
           </div>
-          <button
-            onClick={() => exportSystemsToCSV([kornitSystem], systemsInputs.filter((s) => s.name === selectedKornit))}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all"
-          >
-            <Download className="w-4 h-4" />
-            Export Excel
-          </button>
+          <div className="flex items-center gap-3 flex-wrap justify-end">
+            <CurrencySelector />
+            <button
+              onClick={() => exportSystemsToCSV([kornitSystem], systemsInputs.filter((s) => s.name === selectedKornit))}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all"
+            >
+              <Download className="w-4 h-4" />
+              Export Excel
+            </button>
+          </div>
         </div>
       </div>
 
