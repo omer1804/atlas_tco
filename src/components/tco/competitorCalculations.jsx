@@ -188,8 +188,13 @@ export function getScreenCPP(runLength, numColors, laborCostPerHr = 20) {
   const colorIdx = Math.min(Math.max(Math.round(numColors) - 1, 0), SCREEN_MAX_COLORS - 1);
   const tiers = SCREEN_LABOR_TIERS; // [5, 10, 15, 20]
 
-  // Clamp to [5, 25]; below 5 use tier 5, above 20 extrapolate using 15→20 slope
-  if (laborCostPerHr <= tiers[0]) return getCPPFromTable(SCREEN_CPP_TABLES[tiers[0]], rl, colorIdx);
+  // Below $5: extrapolate using the slope between $5 and $10
+  if (laborCostPerHr <= tiers[0]) {
+    const cpp5 = getCPPFromTable(SCREEN_CPP_TABLES[5], rl, colorIdx);
+    const cpp10 = getCPPFromTable(SCREEN_CPP_TABLES[10], rl, colorIdx);
+    const slope = (cpp10 - cpp5) / (10 - 5);
+    return cpp5 + slope * (laborCostPerHr - 5);
+  }
 
   if (laborCostPerHr >= tiers[tiers.length - 1]) {
     // Extrapolate linearly beyond $20 using the slope between $15 and $20
