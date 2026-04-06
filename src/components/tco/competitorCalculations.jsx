@@ -1,7 +1,5 @@
 // Competitor calculation functions
 
-const WORKING_DAYS = 252;
-
 // ─── DTF ────────────────────────────────────────────────────────────────────
 export const DEFAULT_DTF_INPUTS = {
   // CAPEX
@@ -27,6 +25,7 @@ export const DEFAULT_DTF_INPUTS = {
   utilization: 0.8,
   // Service
   serviceContractPerYear: 12000,
+  workingDays: 252,
 };
 
 export function computeDTF(inputs) {
@@ -42,7 +41,7 @@ export function computeDTF(inputs) {
   const pressCapacity = inputs.numPressStations * inputs.pressTPH * inputs.availability * inputs.utilization;
   const effectiveTPH = Math.min(printerCapacity, pressCapacity);
 
-  const yearlyImpressions = effectiveTPH * inputs.hrsPerShift * WORKING_DAYS;
+  const yearlyImpressions = effectiveTPH * inputs.hrsPerShift * (inputs.workingDays || 252);
   const fiveYearImpressions = yearlyImpressions * 5;
 
   // Labor (5Y)
@@ -113,7 +112,7 @@ export function computeScreen(inputs) {
 
   // Performance
   const effectiveTPH = inputs.tph * inputs.availability * inputs.utilization;
-  const yearlyImpressions = effectiveTPH * inputs.hrsPerShift * WORKING_DAYS;
+  const yearlyImpressions = effectiveTPH * inputs.hrsPerShift * (inputs.workingDays || 252);
   const fiveYearImpressions = yearlyImpressions * 5;
 
   // Labor (5Y)

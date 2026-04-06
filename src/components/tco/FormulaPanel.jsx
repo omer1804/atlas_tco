@@ -25,7 +25,7 @@ export default function FormulaPanel() {
             <h3 className="text-base font-bold text-slate-900 mb-4 pb-2 border-b-2 border-blue-100">Kornit TCO Formula</h3>
 
             <Block title="5-Year Impressions">
-              <Line>Yearly = TPT × Availability × Utilization × Hrs/Day × 252 working days</Line>
+              <Line>Yearly = TPT × Availability × Utilization × Hrs/Day × Working Days/Year</Line>
               <Line>5Y Impressions = Yearly × 5</Line>
             </Block>
 
@@ -39,7 +39,7 @@ export default function FormulaPanel() {
               <Line>Labor = Operators × Labor $/hr × Hrs/Day × 365 days × 5</Line>
               <Line>Ink = 5Y Impressions × [(Ink ml / 1000 × Ink $/L) + (Fixa ml / Fixa Dilution / 1000 × Fixa $/L)]</Line>
               <Line>Maintenance = Service Contract/Year × 5</Line>
-              <Line>Energy = (System KW + Dryer KW) × Hrs/Day × 252 × 5 × KWh cost</Line>
+              <Line>Energy = (System KW + Dryer KW) × Hrs/Day × Working Days/Year × 5 × KWh cost</Line>
               <Line>Footprint = (Sqft System + Sqft Dryer) × $/Sqft × 5</Line>
             </Block>
 
@@ -57,7 +57,7 @@ export default function FormulaPanel() {
               <Line>Printer Capacity = Num Printers × Printer TPH × Availability × Utilization</Line>
               <Line>Press Capacity = Num Presses × Press TPH × Availability × Utilization</Line>
               <Line bold>Effective TPH = MIN(Printer Capacity, Press Capacity) ← bottleneck</Line>
-              <Line>Yearly = Effective TPH × Hrs/Day × 252</Line>
+              <Line>Yearly = Effective TPH × Hrs/Day × Working Days/Year</Line>
               <Line>5Y Impressions = Yearly × 5</Line>
             </Block>
 
