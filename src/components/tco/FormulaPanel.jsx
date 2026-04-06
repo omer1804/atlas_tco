@@ -5,16 +5,16 @@ export default function FormulaPanel() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-blue-200 shadow-sm overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-6 py-4 bg-blue-50 hover:bg-blue-100 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-blue-500" />
-          <span className="text-sm font-semibold text-slate-700">See How it was Calculated</span>
+          <BookOpen className="w-4 h-4 text-blue-600" />
+          <span className="text-sm font-semibold text-blue-700">How is it Calculated?</span>
         </div>
-        {open ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+        {open ? <ChevronUp className="w-4 h-4 text-blue-500" /> : <ChevronDown className="w-4 h-4 text-blue-500" />}
       </button>
 
       {open && (
