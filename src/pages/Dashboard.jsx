@@ -9,6 +9,7 @@ import SystemCard from "../components/tco/SystemCard";
 import PerformanceTable from "../components/tco/PerformanceTable";
 import InputsPanel from "../components/tco/InputsPanel";
 import CurrencySelector from "../components/tco/CurrencySelector";
+import FormulaPanel from "../components/tco/FormulaPanel";
 import { computeSystem, DEFAULT_SYSTEMS } from "../components/tco/tcoCalculations";
 import { formatCurrency, SYSTEM_COLORS } from "../components/tco/tcoData";
 import { useCurrency } from "../lib/CurrencyContext";
@@ -65,6 +66,7 @@ export default function Dashboard() {
             <Link to="/Comparison" className="text-xs text-blue-500 hover:underline mt-1 inline-block">→ Compare vs DTF &amp; Screen</Link>
           </div>
           <div className="flex items-center gap-3 flex-wrap justify-end">
+            <FormulaPanel />
             <CurrencySelector />
             <button
               onClick={() => exportSystemsToCSV(systems, systemsInputs)}
