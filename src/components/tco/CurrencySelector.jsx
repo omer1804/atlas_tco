@@ -8,11 +8,6 @@ export default function CurrencySelector() {
   const [localCurrency, setLocalCurrency] = useState(currency);
   const [localRate, setLocalRate] = useState(rate);
 
-  useEffect(() => {
-    setLocalCurrency(currency);
-    setLocalRate(rate);
-  }, [currency, rate]);
-
   function handleApply() {
     setCurrency(localCurrency);
     setRate(localCurrency.code === "USD" ? 1 : (parseFloat(localRate) || 1));
