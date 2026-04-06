@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatCurrency, formatNumber, SYSTEM_COLORS } from "./tcoData";
 import { motion } from "framer-motion";
 
-export default function PerformanceTable({ systems, title }) {
+export default function PerformanceTable({ systems, title, convert = (v) => v, currencySymbol = "$" }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -24,8 +24,8 @@ export default function PerformanceTable({ systems, title }) {
               <TableHead className="text-xs font-semibold text-slate-500 text-right">Utilization</TableHead>
               <TableHead className="text-xs font-semibold text-slate-500 text-right">1Y Impressions</TableHead>
               <TableHead className="text-xs font-semibold text-slate-500 text-right">5Y Impressions</TableHead>
-              <TableHead className="text-xs font-semibold text-slate-500 text-right">CPP ($)</TableHead>
-              <TableHead className="text-xs font-semibold text-slate-500 text-right">TCO ($)</TableHead>
+              <TableHead className="text-xs font-semibold text-slate-500 text-right">CPP ({currencySymbol})</TableHead>
+              <TableHead className="text-xs font-semibold text-slate-500 text-right">TCO ({currencySymbol})</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -42,8 +42,8 @@ export default function PerformanceTable({ systems, title }) {
                 <TableCell className="text-right text-sm">{(s.performance.utilization * 100).toFixed(0)}%</TableCell>
                 <TableCell className="text-right text-sm">{formatNumber(s.performance.yearly)}</TableCell>
                 <TableCell className="text-right text-sm">{formatNumber(s.performance.fiveYear)}</TableCell>
-                <TableCell className="text-right text-sm font-medium">${s.opex.cpp.toFixed(3)}</TableCell>
-                <TableCell className="text-right text-sm font-bold">${s.tco.toFixed(3)}</TableCell>
+                <TableCell className="text-right text-sm font-medium">{currencySymbol}{convert(s.opex.cpp).toFixed(3)}</TableCell>
+                <TableCell className="text-right text-sm font-bold">{currencySymbol}{convert(s.tco).toFixed(3)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

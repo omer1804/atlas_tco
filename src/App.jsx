@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Dashboard from './pages/Dashboard';
 import Comparison from './pages/Comparison';
 import PasswordGate from './components/PasswordGate';
+import { CurrencyProvider } from './lib/CurrencyContext';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -35,6 +36,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
+    <CurrencyProvider>
     <PasswordGate>
     <Routes>
       <Route path="/" element={<Navigate to="/Dashboard" replace />} />
@@ -43,6 +45,7 @@ const AuthenticatedApp = () => {
       <Route path="*" element={<PageNotFound />} />
     </Routes>
     </PasswordGate>
+    </CurrencyProvider>
   );
 };
 
