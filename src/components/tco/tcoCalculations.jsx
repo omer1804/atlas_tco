@@ -116,7 +116,7 @@ export const DEFAULT_SYSTEMS = [
       systemPrice: 600000, installation: 10000,
       lifeTime: 5, interestRate: 0,
       operatorsPerSystem: 1.5, laborCostPerHr: 18, hrsPerShift: 12,
-      inkCostPerL: 103, functionalConsumablesPerL: 103, fixaCostPerL: 13,
+      inkCostPerL: 150, functionalConsumablesPerL: 103, fixaCostPerL: 13,
       avgInkLaydown: 4.7, fixaLaydown: 35, fixaDilution: 15,
       serviceContractPerYear: 30000,
       kwhCost: 0.1, systemPower: 1.5, systemPowerIdle: 0.5, dryerPower: 25,

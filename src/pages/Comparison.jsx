@@ -33,7 +33,7 @@ export default function Comparison() {
   const [systemsInputs, setSystemsInputs] = useState(
     DEFAULT_SYSTEMS.map((s) => ({ name: s.name, inputs: { ...s.inputs } }))
   );
-  const [selectedKornit, setSelectedKornit] = useState("Atlas MAX Plus");
+  const [selectedKornit, setSelectedKornit] = useState(DEFAULT_SYSTEMS[0].name);
   const [showKornitInputs, setShowKornitInputs] = useState(false);
 
   // Compute systems using current inputs as-is (user can override freely)
