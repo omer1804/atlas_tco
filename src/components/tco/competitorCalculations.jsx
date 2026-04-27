@@ -26,7 +26,7 @@ export const DEFAULT_DTF_INPUTS = {
   utilization: 0.8,
   // Service
   serviceContractPerYear: 12000,
-  workingDays: 252,
+  workingDays: 365,
 };
 
 export function computeDTF(inputs) {
