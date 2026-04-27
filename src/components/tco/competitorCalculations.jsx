@@ -47,7 +47,7 @@ export function computeDTF(inputs) {
 
   // Labor (5Y)
   const totalOperators = inputs.operatorsPrinterCutter + inputs.operatorsMatching + inputs.operatorsPresses;
-  const labor5Y = totalOperators * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
+  const labor5Y = totalOperators * inputs.laborCostPerHr * inputs.hrsPerShift * (inputs.workingDays || 252) * 5;
 
   // Consumables ink + powder/film (5Y)
   const consumables5Y = fiveYearImpressions * (
