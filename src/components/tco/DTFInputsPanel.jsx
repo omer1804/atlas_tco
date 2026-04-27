@@ -26,6 +26,7 @@ const FIELDS = [
     { key: "availability", label: "Availability", step: 0.01, isPercent: true },
     { key: "utilization", label: "Utilization", step: 0.01, isPercent: true },
     { key: "serviceContractPerYear", label: "Service contract/year ($)", prefix: "$", step: 1000 },
+    { key: "workingDays", label: "Working days/year", step: 1 },
   ]},
 ];
 
