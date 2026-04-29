@@ -60,7 +60,12 @@ export default function Comparison() {
     [systemsInputs, selectedKornit]
   );
   const dtfResult = useMemo(
-    () => computeDTF({ ...dtfInputs, laborCostPerHr: kornitSelectedInputs?.laborCostPerHr ?? dtfInputs.laborCostPerHr }),
+    () => computeDTF({
+      ...dtfInputs,
+      laborCostPerHr: kornitSelectedInputs?.laborCostPerHr ?? dtfInputs.laborCostPerHr,
+      hrsPerShift: kornitSelectedInputs?.hrsPerShift ?? dtfInputs.hrsPerShift,
+      workingDays: kornitSelectedInputs?.workingDays ?? dtfInputs.workingDays,
+    }),
     [dtfInputs, kornitSelectedInputs]
   );
 
@@ -165,7 +170,7 @@ export default function Comparison() {
             key={f}
             onClick={() => {
               setFabric(f);
-              const overrides = f === "polyester" ? { avgInkLaydown: 6.8, tpt: 80 } : { avgInkLaydown: 4.7, tpt: 103 };
+              const overrides = f === "polyester" ? { avgInkLaydown: 6.8, tpt: 90 } : { avgInkLaydown: 4.7, tpt: 103 };
               setSystemsInputs((prev) => prev.map((s) => ({ ...s, inputs: { ...s.inputs, ...overrides } })));
             }}
             className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold capitalize transition-all ${
@@ -249,7 +254,9 @@ export default function Comparison() {
                 inputs={dtfInputs}
                 onChange={handleDTFChange}
                 onReset={() => setDtfInputs({ ...DEFAULT_DTF_INPUTS })}
-                kornitLaborCostPerHr={systemsInputs.find((s) => s.name === selectedKornit)?.inputs.laborCostPerHr}
+                kornitLaborCostPerHr={kornitSelectedInputs?.laborCostPerHr}
+                kornitHrsPerShift={kornitSelectedInputs?.hrsPerShift}
+                kornitWorkingDays={kornitSelectedInputs?.workingDays}
               />
             )}
           </div>

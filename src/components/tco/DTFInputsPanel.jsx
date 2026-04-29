@@ -11,7 +11,7 @@ const LOCKED_PARAMS = [
   "printerTPH", "pressTPH", "availability", "utilization",
 ];
 
-export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborCostPerHr }) {
+export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborCostPerHr, kornitHrsPerShift, kornitWorkingDays }) {
   const [unlocked, setUnlocked] = useState(false);
   const [pwInput, setPwInput] = useState("");
   const [pwError, setPwError] = useState(false);
@@ -69,9 +69,9 @@ export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborC
     );
   }
 
-  // Press operators: always shown, locked when Auto mode is on
-  const pressOpsLocked = !unlocked && inputs.pressAuto;
-  const effectivePressOps = inputs.pressAuto ? 1 : inputs.operatorsPresses;
+  // Press operators: always shown, locked when Auto (=1) OR when Manual (locked to 2)
+  const pressOpsLocked = !unlocked; // always locked unless advanced unlocked
+  const effectivePressOps = inputs.pressAuto ? 1 : 2;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -161,13 +161,14 @@ export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborC
               </td>
             </tr>
 
-            {/* Press operators — always shown, locked when Auto */}
+            {/* Press operators — always shown, always locked (Auto=1, Manual=2) */}
             <tr className="border-t border-slate-50 hover:bg-slate-50/50">
               <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">
-                Operators (Presses){inputs.pressAuto && <span className="ml-1 text-emerald-600 font-medium">— Auto: 1</span>}
+                Operators (Presses)
+                <span className="ml-1 text-[10px] text-slate-400">{inputs.pressAuto ? "— Auto: 1" : "— Manual: 2"}</span>
               </td>
               <td className="py-1 px-3 text-center">
-                {pressOpsLocked ? lockedCell(1) : (
+                {pressOpsLocked ? lockedCell(inputs.pressAuto ? 1 : 2) : (
                   <input
                     type="number"
                     step={1}
@@ -191,8 +192,24 @@ export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborC
               </td>
             </tr>
 
-            {row("Hrs / Day", "hrsPerShift", { step: 1 })}
-            {row("Working Days / Year", "workingDays", { step: 1 })}
+            {/* Hrs/Day — synced from Kornit */}
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">
+                Hrs / Day<span className="ml-1 text-[10px] text-slate-400">(from Kornit)</span>
+              </td>
+              <td className="py-1 px-3 text-center">
+                {lockedCell(kornitHrsPerShift ?? inputs.hrsPerShift)}
+              </td>
+            </tr>
+            {/* Working Days — synced from Kornit */}
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">
+                Working Days / Year<span className="ml-1 text-[10px] text-slate-400">(from Kornit)</span>
+              </td>
+              <td className="py-1 px-3 text-center">
+                {lockedCell(kornitWorkingDays ?? inputs.workingDays)}
+              </td>
+            </tr>
 
             {/* Consumables — all editable */}
             <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-green-50">Consumables</td></tr>
