@@ -69,9 +69,9 @@ export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborC
     );
   }
 
-  // Press operators: always shown, locked when Auto (=1) OR when Manual (locked to 2)
+  // Press operators: always shown, locked when Auto (=2) OR when Manual (locked to 3)
   const pressOpsLocked = !unlocked; // always locked unless advanced unlocked
-  const effectivePressOps = inputs.pressAuto ? 1 : 2;
+  const effectivePressOps = inputs.pressAuto ? 2 : 3;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -165,10 +165,10 @@ export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborC
             <tr className="border-t border-slate-50 hover:bg-slate-50/50">
               <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">
                 Operators (Presses)
-                <span className="ml-1 text-[10px] text-slate-400">{inputs.pressAuto ? "— Auto: 1" : "— Manual: 2"}</span>
+                <span className="ml-1 text-[10px] text-slate-400">{inputs.pressAuto ? "— Auto: 2" : "— Manual: 3"}</span>
               </td>
               <td className="py-1 px-3 text-center">
-                {pressOpsLocked ? lockedCell(inputs.pressAuto ? 1 : 2) : (
+                {pressOpsLocked ? lockedCell(inputs.pressAuto ? 2 : 3) : (
                   <input
                     type="number"
                     step={1}

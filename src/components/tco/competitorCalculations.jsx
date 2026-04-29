@@ -45,8 +45,8 @@ export function computeDTF(inputs) {
   const yearlyImpressions = effectiveTPH * inputs.hrsPerShift * (inputs.workingDays || 252);
   const fiveYearImpressions = yearlyImpressions * 5;
 
-  // Labor (5Y) — auto press = 1 operator regardless of operatorsPresses setting
-  const pressOps = inputs.pressAuto ? 1 : inputs.operatorsPresses;
+  // Labor (5Y) — auto press = 2 operators, manual = 3 operators
+  const pressOps = inputs.pressAuto ? 2 : (inputs.operatorsPresses ?? 3);
   const totalOperators = inputs.operatorsPrinterCutter + inputs.operatorsMatching + pressOps;
   const labor5Y = totalOperators * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
 
