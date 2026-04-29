@@ -55,7 +55,14 @@ export default function Comparison() {
   // ── DTF state ─────────────────────────────────────────────────────────────
   const [dtfInputs, setDtfInputs] = useState({ ...DEFAULT_DTF_INPUTS });
   const [showDTFInputs, setShowDTFInputs] = useState(false);
-  const dtfResult = useMemo(() => computeDTF(dtfInputs), [dtfInputs]);
+  const kornitSelectedInputs = useMemo(
+    () => systemsInputs.find((s) => s.name === selectedKornit)?.inputs,
+    [systemsInputs, selectedKornit]
+  );
+  const dtfResult = useMemo(
+    () => computeDTF({ ...dtfInputs, laborCostPerHr: kornitSelectedInputs?.laborCostPerHr ?? dtfInputs.laborCostPerHr }),
+    [dtfInputs, kornitSelectedInputs]
+  );
 
   function handleDTFChange(key, value) {
     setDtfInputs((prev) => ({ ...prev, [key]: value }));
@@ -242,6 +249,7 @@ export default function Comparison() {
                 inputs={dtfInputs}
                 onChange={handleDTFChange}
                 onReset={() => setDtfInputs({ ...DEFAULT_DTF_INPUTS })}
+                kornitLaborCostPerHr={systemsInputs.find((s) => s.name === selectedKornit)?.inputs.laborCostPerHr}
               />
             )}
           </div>

@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { Lock, Unlock, RotateCcw } from "lucide-react";
-import { DEFAULT_DTF_INPUTS } from "./competitorCalculations";
 
 const UNLOCK_PASSWORD = "Kk123456!";
 
-const LOCKED_PARAMS = ["numPrinters", "numPressStations"];
+// All locked params (non-cost fields)
+const LOCKED_PARAMS = [
+  "numPrinters", "numPressStations",
+  "operatorsPrinterCutter", "operatorsMatching", "operatorsPresses",
+  "hrsPerShift", "workingDays",
+  "printerTPH", "pressTPH", "availability", "utilization",
+];
 
-export default function DTFInputsPanel({ inputs, onChange, onReset }) {
+export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborCostPerHr }) {
   const [unlocked, setUnlocked] = useState(false);
   const [pwInput, setPwInput] = useState("");
   const [pwError, setPwError] = useState(false);
@@ -28,25 +33,25 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
     return !unlocked && LOCKED_PARAMS.includes(key);
   }
 
+  function lockedCell(value, prefix = "") {
+    return (
+      <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded inline-flex items-center gap-1">
+        <Lock className="w-2.5 h-2.5 text-slate-400" />{prefix}{value}
+      </span>
+    );
+  }
+
   function row(label, key, opts = {}) {
     const locked = isLocked(key);
     const { step = 1, prefix = "", isPercent = false, min, max } = opts;
-    const displayVal = isPercent
-      ? ((inputs[key] || 0) * 100).toFixed(1)
-      : inputs[key];
+    const rawVal = inputs[key];
+    const displayVal = isPercent ? ((rawVal || 0) * 100).toFixed(1) : rawVal;
 
     return (
       <tr key={key} className="border-t border-slate-50 hover:bg-slate-50/50">
-        <td className="py-1.5 px-4 text-slate-600 pl-6 text-xs">
-          {label}
-          {locked && <Lock className="inline w-3 h-3 ml-1 text-slate-400" />}
-        </td>
+        <td className="py-1.5 px-4 text-slate-600 pl-6 text-xs">{label}</td>
         <td className="py-1 px-3 text-center">
-          {locked ? (
-            <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded">
-              {prefix}{inputs[key]}
-            </span>
-          ) : (
+          {locked ? lockedCell(isPercent ? `${displayVal}%` : displayVal, isPercent ? "" : prefix) : (
             <input
               type="number"
               step={step}
@@ -54,12 +59,7 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
               max={max}
               value={displayVal}
               onChange={(e) =>
-                onChange(
-                  key,
-                  isPercent
-                    ? parseFloat(e.target.value) / 100
-                    : parseFloat(e.target.value)
-                )
+                onChange(key, isPercent ? parseFloat(e.target.value) / 100 : parseFloat(e.target.value))
               }
               className="w-24 text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
@@ -69,11 +69,9 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
     );
   }
 
-  // Derived effective TPH for display
-  const printerCap = inputs.numPrinters * inputs.printerTPH * inputs.availability * inputs.utilization;
-  const pressCap = inputs.numPressStations * inputs.pressTPH * inputs.availability * inputs.utilization;
-  const bottleneck = Math.min(printerCap, pressCap);
-  const bottleneckSource = printerCap <= pressCap ? "printers" : "presses";
+  // Press operators: always shown, locked when Auto mode is on
+  const pressOpsLocked = !unlocked && inputs.pressAuto;
+  const effectivePressOps = inputs.pressAuto ? 1 : inputs.operatorsPresses;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -81,24 +79,15 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
         <h4 className="text-sm font-semibold text-slate-800">DTF Parameters</h4>
         <div className="flex items-center gap-2">
           {unlocked ? (
-            <button
-              onClick={() => setUnlocked(false)}
-              className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800"
-            >
+            <button onClick={() => setUnlocked(false)} className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800">
               <Unlock className="w-3.5 h-3.5" /> Advanced
             </button>
           ) : (
-            <button
-              onClick={() => setShowPwField((v) => !v)}
-              className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
-            >
+            <button onClick={() => setShowPwField((v) => !v)} className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600">
               <Lock className="w-3.5 h-3.5" /> Unlock
             </button>
           )}
-          <button
-            onClick={onReset}
-            className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700"
-          >
+          <button onClick={onReset} className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700">
             <RotateCcw className="w-3 h-3" /> Reset
           </button>
         </div>
@@ -114,21 +103,17 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
             placeholder="Enter password..."
             className={`text-xs border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-orange-400 ${pwError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
           />
-          <button
-            onClick={handleUnlock}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-600 text-white hover:bg-orange-700"
-          >
+          <button onClick={handleUnlock} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-600 text-white hover:bg-orange-700">
             Unlock
           </button>
           {pwError && <span className="text-xs text-red-500">Incorrect password</span>}
         </div>
       )}
 
-      {/* Locked notice */}
       {!unlocked && (
         <div className="px-5 py-2 bg-amber-50 border-b border-amber-100 text-xs text-amber-700 flex items-center gap-1.5">
           <Lock className="w-3 h-3" />
-          Baseline: 2 printers · 3 press stations (locked)
+          Locked: 2 printers · 3 press stations · labor headcount · performance
         </div>
       )}
 
@@ -141,6 +126,7 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
             </tr>
           </thead>
           <tbody>
+
             {/* CAPEX */}
             <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-amber-50">CAPEX</td></tr>
             {row("Num Printers", "numPrinters", { step: 1, min: 1 })}
@@ -154,11 +140,11 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
             {row("Operators (Printer/Cutter)", "operatorsPrinterCutter", { step: 1 })}
             {row("Operators (Matching)", "operatorsMatching", { step: 1 })}
 
-            {/* Press auto toggle */}
+            {/* Press Auto/Manual toggle */}
             <tr className="border-t border-slate-50 hover:bg-slate-50/50">
               <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">Press Operators Mode</td>
               <td className="py-1 px-3 text-center">
-                <div className="flex items-center justify-center gap-1">
+                <div className="flex items-center justify-center gap-0">
                   <button
                     onClick={() => onChange("pressAuto", false)}
                     className={`text-xs px-2 py-1 rounded-l border transition-all ${!inputs.pressAuto ? "bg-orange-600 text-white border-orange-600" : "bg-white text-slate-500 border-slate-200"}`}
@@ -167,45 +153,92 @@ export default function DTFInputsPanel({ inputs, onChange, onReset }) {
                   </button>
                   <button
                     onClick={() => onChange("pressAuto", true)}
-                    className={`text-xs px-2 py-1 rounded-r border transition-all ${inputs.pressAuto ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-slate-500 border-slate-200"}`}
+                    className={`text-xs px-2 py-1 rounded-r border-t border-r border-b transition-all ${inputs.pressAuto ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-slate-500 border-slate-200"}`}
                   >
-                    Auto (1 op)
+                    Auto
                   </button>
                 </div>
               </td>
             </tr>
-            {!inputs.pressAuto && row("Operators (Presses)", "operatorsPresses", { step: 1 })}
 
-            {row("Labor Cost ($/hr)", "laborCostPerHr", { step: 1, prefix: "$" })}
+            {/* Press operators — always shown, locked when Auto */}
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">
+                Operators (Presses){inputs.pressAuto && <span className="ml-1 text-emerald-600 font-medium">— Auto: 1</span>}
+              </td>
+              <td className="py-1 px-3 text-center">
+                {pressOpsLocked ? lockedCell(1) : (
+                  <input
+                    type="number"
+                    step={1}
+                    min={1}
+                    value={inputs.operatorsPresses}
+                    onChange={(e) => onChange("operatorsPresses", parseFloat(e.target.value))}
+                    className="w-24 text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                )}
+              </td>
+            </tr>
+
+            {/* Labor cost — synced from Kornit (locked) */}
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">
+                Labor Cost ($/hr)
+                <span className="ml-1 text-[10px] text-slate-400">(from Kornit)</span>
+              </td>
+              <td className="py-1 px-3 text-center">
+                {lockedCell(kornitLaborCostPerHr ?? inputs.laborCostPerHr, "$")}
+              </td>
+            </tr>
+
             {row("Hrs / Day", "hrsPerShift", { step: 1 })}
             {row("Working Days / Year", "workingDays", { step: 1 })}
 
-            {/* Consumables */}
+            {/* Consumables — all editable */}
             <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-green-50">Consumables</td></tr>
-            {row("Consumables Cost ($/L)", "consumablesCostPerL", { step: 1, prefix: "$" })}
-            {row("Ink Laydown (ml/print)", "inkLaydownMlPerPrint", { step: 0.5 })}
-            {row("Powder+Film Cost ($/print)", "powderFilmCostPerPrint", { step: 0.01, prefix: "$" })}
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">Consumables Cost ($/L)</td>
+              <td className="py-1 px-3 text-center">
+                <input type="number" step={1} value={inputs.consumablesCostPerL}
+                  onChange={(e) => onChange("consumablesCostPerL", parseFloat(e.target.value))}
+                  className="w-24 text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              </td>
+            </tr>
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">Ink Laydown (ml/print)</td>
+              <td className="py-1 px-3 text-center">
+                <input type="number" step={0.5} value={inputs.inkLaydownMlPerPrint}
+                  onChange={(e) => onChange("inkLaydownMlPerPrint", parseFloat(e.target.value))}
+                  className="w-24 text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              </td>
+            </tr>
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">Powder+Film Cost ($/print)</td>
+              <td className="py-1 px-3 text-center">
+                <input type="number" step={0.01} value={inputs.powderFilmCostPerPrint}
+                  onChange={(e) => onChange("powderFilmCostPerPrint", parseFloat(e.target.value))}
+                  className="w-24 text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400" />
+              </td>
+            </tr>
 
-            {/* Performance */}
+            {/* Performance — all locked */}
             <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-blue-50">Performance</td></tr>
             {row("Printer TPH (prints/hr each)", "printerTPH", { step: 5 })}
             {row("Press TPH (garments/hr each)", "pressTPH", { step: 5 })}
             {row("Availability (%)", "availability", { step: 0.01, isPercent: true })}
             {row("Utilization (%)", "utilization", { step: 0.01, isPercent: true })}
 
-            {/* Bottleneck display */}
-            <tr className="bg-blue-50/60 border-t border-blue-100">
-              <td className="py-1.5 px-4 pl-6 text-blue-700 text-xs font-medium">
-                Effective TPH (bottleneck: {bottleneckSource})
-              </td>
-              <td className="py-1 px-3 text-center text-blue-800 font-bold text-xs">
-                {bottleneck.toFixed(1)} /hr
+            {/* Maintenance */}
+            <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-slate-50">Maintenance</td></tr>
+            <tr className="border-t border-slate-50 hover:bg-slate-50/50">
+              <td className="py-1.5 px-4 pl-6 text-slate-600 text-xs">Service Contract ($/year)</td>
+              <td className="py-1 px-3 text-center">
+                <input type="number" step={1000} value={inputs.serviceContractPerYear}
+                  onChange={(e) => onChange("serviceContractPerYear", parseFloat(e.target.value))}
+                  className="w-24 text-center border border-slate-200 rounded-lg py-1 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-400" />
               </td>
             </tr>
 
-            {/* Service */}
-            <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-slate-50">Maintenance</td></tr>
-            {row("Service Contract ($/year)", "serviceContractPerYear", { step: 1000, prefix: "$" })}
           </tbody>
         </table>
       </div>
