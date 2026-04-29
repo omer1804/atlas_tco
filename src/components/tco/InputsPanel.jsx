@@ -61,25 +61,7 @@ const ROW_GROUPS = [
         ],
         total: { label: "Maintenance (5Y)", fn: (inp) => inp.serviceContractPerYear * 5 },
       },
-      {
-        label: "Energy",
-        rows: [
-          { key: "kwhCost", label: "KWh cost [$]", prefix: "$", step: 0.01 },
-          { key: "systemPower", label: "System power [KWh]", step: 0.5 },
-          { key: "systemPowerIdle", label: "System power idle [KWh]", step: 0.1 },
-          { key: "dryerPower", label: "Dryer power [KWh]", step: 1 },
-        ],
-        total: { label: "Energy (5Y)", fn: (inp) => (inp.systemPower + inp.dryerPower) * inp.hrsPerShift * 365 * 5 * inp.kwhCost },
-      },
-      {
-        label: "Foot Print",
-        rows: [
-          { key: "sqrFootCost", label: "$/Sqr foot", prefix: "$", step: 1 },
-          { key: "sqrFootSystem", label: "Sqr foot - system", step: 10 },
-          { key: "sqrFootDryer", label: "Sqr foot - dryer", step: 10 },
-        ],
-        total: { label: "Foot Print (5Y)", fn: (inp) => (inp.sqrFootSystem + inp.sqrFootDryer) * inp.sqrFootCost * 5 },
-      },
+
     ],
   },
   {

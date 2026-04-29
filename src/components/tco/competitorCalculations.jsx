@@ -3,25 +3,26 @@
 // ─── DTF ────────────────────────────────────────────────────────────────────
 export const DEFAULT_DTF_INPUTS = {
   // CAPEX
-  numPrinters: 3,
+  numPrinters: 2,
   printerCostEach: 30000,
   cutterCost: 15000,
   numPressStations: 3,
   pressStationCostEach: 5000,
   // Labor
-  operatorsPrinterCutter: 1.5,
+  operatorsPrinterCutter: 2,
   operatorsMatching: 1,
-  operatorsPresses: 3,
+  operatorsPresses: 2,
+  pressAuto: false, // if true, operatorsPresses = 1
   laborCostPerHr: 18,
-  hrsPerShift: 10,
+  hrsPerShift: 12,
   // Consumables
-  consumablesCostPerL: 50, // mid range $20–$80
-  inkLaydownMlPerPrint: 6,  // ml per print
-  powderFilmCostPerPrint: 0.20, // powder + film cost per impression
+  consumablesCostPerL: 50,
+  inkLaydownMlPerPrint: 6,
+  powderFilmCostPerPrint: 0.20,
   // Performance
   printerTPH: 80,   // prints/hr per printer
   pressTPH: 60,     // garments/hr per press
-  availability: 0.75,
+  availability: 0.90,
   utilization: 0.8,
   // Service
   serviceContractPerYear: 12000,
@@ -44,8 +45,9 @@ export function computeDTF(inputs) {
   const yearlyImpressions = effectiveTPH * inputs.hrsPerShift * (inputs.workingDays || 252);
   const fiveYearImpressions = yearlyImpressions * 5;
 
-  // Labor (5Y)
-  const totalOperators = inputs.operatorsPrinterCutter + inputs.operatorsMatching + inputs.operatorsPresses;
+  // Labor (5Y) — auto press = 1 operator regardless of operatorsPresses setting
+  const pressOps = inputs.pressAuto ? 1 : inputs.operatorsPresses;
+  const totalOperators = inputs.operatorsPrinterCutter + inputs.operatorsMatching + pressOps;
   const labor5Y = totalOperators * inputs.laborCostPerHr * inputs.hrsPerShift * 365 * 5;
 
   // Consumables ink + powder/film (5Y)
