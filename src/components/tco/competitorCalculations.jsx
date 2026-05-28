@@ -9,7 +9,7 @@ export const DEFAULT_DTF_INPUTS = {
   numPressStations: 3,
   pressStationCostEach: 5000,
   // Labor
-  operatorsPrinterCutter: 2,
+  operatorsPrinterCutter: 1,
   operatorsMatching: 1,
   operatorsPresses: 2,
   pressAuto: false, // if true, operatorsPresses = 1

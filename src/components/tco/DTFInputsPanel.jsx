@@ -137,7 +137,7 @@ export default function DTFInputsPanel({ inputs, onChange, onReset, kornitLaborC
 
             {/* Labor */}
             <tr><td colSpan={2} className="py-1.5 px-4 font-bold text-slate-700 text-xs bg-pink-50">Labor</td></tr>
-            {row("Operators (Printer/Cutter)", "operatorsPrinterCutter", { step: 1 })}
+            {row("Operators (Printer/Cutter/Warehouse)", "operatorsPrinterCutter", { step: 1 })}
             {row("Operators (Matching)", "operatorsMatching", { step: 1 })}
 
             {/* Press Auto/Manual toggle */}
