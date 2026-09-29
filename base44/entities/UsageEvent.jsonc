@@ -1,0 +1,25 @@
+{
+  "name": "UsageEvent",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "Type of usage event, e.g. session_start, calculation_completed"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the logged-in user if available"
+    },
+    "page_or_action": {
+      "type": "string",
+      "description": "Page path or action name where the event occurred"
+    },
+    "details": {
+      "type": "string",
+      "description": "Brief non-sensitive context about the event"
+    }
+  },
+  "required": [
+    "event_type"
+  ]
+}

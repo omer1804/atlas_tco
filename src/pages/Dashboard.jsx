@@ -13,6 +13,7 @@ import FormulaPanel from "../components/tco/FormulaPanel";
 import { computeSystem, DEFAULT_SYSTEMS } from "../components/tco/tcoCalculations";
 import { formatCurrency, SYSTEM_COLORS } from "../components/tco/tcoData";
 import { useCurrency } from "../lib/CurrencyContext";
+import { logUsageEvent } from "../lib/usageTracking";
 
 export default function Dashboard() {
   const [systemsInputs, setSystemsInputs] = useState(
@@ -68,7 +69,14 @@ export default function Dashboard() {
           <div className="flex items-center gap-3 flex-wrap justify-end">
             <CurrencySelector />
             <button
-              onClick={() => exportSystemsToCSV(systems, systemsInputs)}
+              onClick={() => {
+                exportSystemsToCSV(systems, systemsInputs);
+                logUsageEvent({
+                  eventType: 'calculation_completed',
+                  pageOrAction: 'Dashboard',
+                  details: `systems=${systems.map((s) => s.name).join('|')}`,
+                });
+              }}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all"
             >
               <Download className="w-4 h-4" />

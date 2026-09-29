@@ -9,10 +9,25 @@ import Dashboard from './pages/Dashboard';
 import Comparison from './pages/Comparison';
 import PasswordGate from './components/PasswordGate';
 import { CurrencyProvider } from './lib/CurrencyContext';
+import { useEffect, useRef } from 'react';
+import { logUsageEvent } from '@/lib/usageTracking';
 // Add page imports here
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
+
+  // Passive usage tracking: log a session_start event once per app load
+  const sessionLogged = useRef(false);
+  useEffect(() => {
+    if (!isLoadingPublicSettings && !isLoadingAuth && !sessionLogged.current) {
+      sessionLogged.current = true;
+      logUsageEvent({
+        eventType: 'session_start',
+        pageOrAction: window.location.pathname,
+        userEmail: user?.email || null,
+      });
+    }
+  }, [isLoadingPublicSettings, isLoadingAuth, user]);
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
